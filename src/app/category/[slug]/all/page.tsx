@@ -19,7 +19,6 @@ export default async function CategoryAllPage({
 
   return (
     <div className="min-h-screen bg-[#fff8f5]">
-      <Navbar />
       <PageHeroBanner
         title={`${category.title} Audiobooks`}
         subtitle={`Browse all ${category.title.toLowerCase()} audiobooks`}
@@ -41,8 +40,6 @@ export default async function CategoryAllPage({
           ))}
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 }

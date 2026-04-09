@@ -1,6 +1,4 @@
 import { notFound } from "next/navigation";
-import Navbar from "@/components/shared/Navbar";
-import Footer from "@/components/shared/Footer";
 import NewReleaseBanner from "@/components/shared/NewReleaseBanner";
 import ProductDetail from "@/features/category/components/ProductDetail";
 import ListenerReviews from "@/features/category/components/ListenerReviews";
@@ -23,7 +21,6 @@ export default async function ProductDetailPage({
 
   return (
     <div className="min-h-screen bg-[#fff8f5]">
-      <Navbar />
       <ProductDetail
         book={book}
         categoryTitle={category.title}
@@ -36,7 +33,6 @@ export default async function ProductDetailPage({
         currentBookId={book.id}
       />
       <NewReleaseBanner />
-      <Footer />
     </div>
   );
 }
