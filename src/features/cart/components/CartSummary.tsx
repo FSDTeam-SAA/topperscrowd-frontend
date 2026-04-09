@@ -21,7 +21,7 @@ export default function CartSummary({
   const total = subtotal + vat - discount;
 
   return (
-    <div className="w-[340px] shrink-0">
+    <div className="w-full lg:w-[340px] shrink-0">
       <h2 className="font-serif text-[32px] font-bold leading-tight text-slate-900">
         Cart Summary
       </h2>

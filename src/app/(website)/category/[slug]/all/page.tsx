@@ -30,16 +30,16 @@ export default function CategoryAllPage({ params }: CategoryAllPageProps) {
         backgroundImage={image}
       />
 
-      <div className="mx-auto max-w-[1200px] py-16">
+      <div className="mx-auto max-w-[1200px] px-4 md:px-6 lg:px-0 py-10 md:py-16">
         <div className="mb-8">
-          <h2 className="font-serif text-[32px] font-bold leading-[1.2] text-slate-900">
+          <h2 className="font-serif text-2xl md:text-[32px] font-bold leading-[1.2] text-slate-900">
             All {title} Audiobooks
           </h2>
           <p className="mt-2 text-base text-slate-500">
             {booksRes?.meta?.total ?? 0} titles available
           </p>
         </div>
-        <div className="grid grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {isLoading
             ? Array.from({ length: 8 }).map((_, i) => (
                 <BookCardSkeleton key={i} />

@@ -5,11 +5,11 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <section className="mx-auto flex items-center justify-between py-16 container mx-auto px-6">
+    <section className="mx-auto flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-0 py-10 md:py-16 container mx-auto px-4 md:px-6">
       {/* Left */}
-      <div className="flex w-[573px] flex-col gap-10">
-        <div className="flex flex-col gap-6">
-          <h1 className="font-serif text-[72px] font-bold leading-[1.2] text-slate-900">
+      <div className="flex w-full lg:w-[573px] flex-col gap-6 md:gap-10">
+        <div className="flex flex-col gap-4 md:gap-6">
+          <h1 className="font-serif text-4xl md:text-6xl lg:text-[72px] font-bold leading-[1.2] text-slate-900">
             The <span className="text-indigo-600">Midnight</span> Archivist
           </h1>
           <p className="text-xl leading-[1.2] text-slate-500">
@@ -66,7 +66,7 @@ export default function HeroSection() {
 
       {/* Right — Book cover */}
       <div className="relative">
-        <div className="relative h-[500px] w-[450px] -skew-x-1 rounded-xl overflow-hidden">
+        <div className="relative h-[300px] w-[260px] md:h-[400px] md:w-[350px] lg:h-[500px] lg:w-[450px] -skew-x-1 rounded-xl overflow-hidden">
           <Image
             src="/images/home/hero-book.png"
             alt="The Midnight Archivist"

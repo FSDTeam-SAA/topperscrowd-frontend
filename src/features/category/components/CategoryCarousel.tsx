@@ -72,7 +72,7 @@ export default function CategoryCarousel({
       <div className="w-full">
         <div className="flex items-end justify-between mb-6">
           <div className="flex flex-col gap-2">
-            <h2 className="font-serif text-[32px] font-bold leading-[1.2] text-slate-900">
+            <h2 className="font-serif text-2xl md:text-[32px] font-bold leading-[1.2] text-slate-900">
               Browse All Categories
             </h2>
             <p className="text-base text-slate-500">See all categories</p>

@@ -44,10 +44,10 @@ export default function ProductDetail({
   };
 
   return (
-    <div className="mx-auto max-w-[1200px] px-[120px] pt-10">
+    <div className="mx-auto max-w-[1200px] px-4 md:px-8 lg:px-[120px] pt-6 md:pt-10">
       {/* Product Hero */}
-      <div className="flex gap-12 items-start">
-        <div className="relative h-[340px] w-[280px] shrink-0 overflow-hidden rounded-lg shadow-lg">
+      <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start">
+        <div className="relative h-[280px] w-full md:h-[340px] md:w-[280px] shrink-0 overflow-hidden rounded-lg shadow-lg">
           <Image
             src={book.image}
             alt={book.title}
@@ -57,7 +57,7 @@ export default function ProductDetail({
         </div>
 
         <div className="flex flex-1 flex-col gap-1 pt-2">
-          <h1 className="font-serif text-[36px] font-bold leading-[1.2] uppercase text-slate-900">
+          <h1 className="font-serif text-2xl md:text-[36px] font-bold leading-[1.2] uppercase text-slate-900">
             {book.title}
           </h1>
           <p className="text-base text-slate-500">

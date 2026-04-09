@@ -30,7 +30,7 @@ export default function CartItem({
 }: CartItemProps) {
   return (
     <div>
-      <div className="flex gap-6">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
         <div className="relative h-[140px] w-[120px] shrink-0">
           <Image
             src={image}
@@ -40,8 +40,8 @@ export default function CartItem({
           />
         </div>
 
-        <div className="flex flex-1 justify-between">
-          <div className="flex gap-6 text-sm text-slate-700">
+        <div className="flex flex-1 flex-col sm:flex-row justify-between gap-4">
+          <div className="flex gap-4 sm:gap-6 text-sm text-slate-700">
             <div className="flex flex-col gap-3 font-medium text-slate-500">
               <span>Author</span>
               <span>Number of pages</span>
@@ -56,7 +56,7 @@ export default function CartItem({
             </div>
           </div>
 
-          <div className="flex flex-col items-end justify-between">
+          <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-between">
             <span className="text-lg font-bold text-indigo-600">
               ${(price * quantity).toFixed(2)}
             </span>

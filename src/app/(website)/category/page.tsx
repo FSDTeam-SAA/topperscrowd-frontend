@@ -19,13 +19,13 @@ export default function CategoryPage() {
         backgroundImage="/images/home/category-horror.png"
       />
 
-      <div className="mx-auto max-w-[1200px] py-16 flex flex-col gap-16">
+      <div className="mx-auto max-w-[1200px] px-4 md:px-6 lg:px-0 py-10 md:py-16 flex flex-col gap-10 md:gap-16">
         {isLoading ? (
-          <div className="animate-pulse flex gap-6">
+          <div className="animate-pulse grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="h-[376px] w-[282px] shrink-0 rounded-2xl bg-slate-200"
+                className="h-[250px] md:h-[376px] rounded-2xl bg-slate-200"
               />
             ))}
           </div>

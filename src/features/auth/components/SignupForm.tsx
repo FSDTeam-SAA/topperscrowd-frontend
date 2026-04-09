@@ -56,7 +56,7 @@ export default function SignupForm() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#0f172a]">
-      <div className="w-[496px] space-y-10">
+      <div className="w-full max-w-[496px] px-4 md:px-0 space-y-10">
         {/* Header */}
         <div className="space-y-2">
           <h1 className="text-4xl font-bold text-white">Create Your Account</h1>

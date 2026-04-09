@@ -10,11 +10,11 @@ export default function FlashSaleSection({
   countdownUnits,
 }: FlashSaleSectionProps) {
   return (
-    <div className="flex items-center gap-12 mx-auto container py-24 rounded-2xl overflow-hidden ">
+    <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mx-auto container px-4 md:px-0 py-12 md:py-24 rounded-2xl overflow-hidden">
       {/* Left */}
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4">
-          <h2 className="font-serif text-[32px] font-bold leading-[1.2] text-slate-900">
+          <h2 className="font-serif text-2xl md:text-[32px] font-bold leading-[1.2] text-slate-900">
             Limited Archive Access
           </h2>
           <p className="text-lg leading-[1.2] text-slate-500">
@@ -44,8 +44,8 @@ export default function FlashSaleSection({
       </div>
 
       {/* Right — Two book covers */}
-      <div className="relative flex-1 h-[292px]">
-        <div className="absolute left-0 top-1.5 h-[260px] w-[260px] overflow-hidden rounded shadow-xl">
+      <div className="relative flex-1 h-[220px] md:h-[292px] w-full max-w-[540px]">
+        <div className="absolute left-0 top-1.5 h-[180px] w-[180px] md:h-[260px] md:w-[260px] overflow-hidden rounded shadow-xl">
           <Image
             src="/images/home/sale-book1.png"
             alt="Sale book"
@@ -53,7 +53,7 @@ export default function FlashSaleSection({
             className="object-cover"
           />
         </div>
-        <div className="absolute right-0 top-8 h-[260px] w-[260px] overflow-hidden rounded shadow-xl">
+        <div className="absolute right-[10%] md:right-0 top-8 h-[180px] w-[180px] md:h-[260px] md:w-[260px] overflow-hidden rounded shadow-xl">
           <Image
             src="/images/home/sale-book2.png"
             alt="Sale book"

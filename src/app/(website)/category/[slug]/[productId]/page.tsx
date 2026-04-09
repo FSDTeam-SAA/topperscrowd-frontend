@@ -51,7 +51,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
       {reviews.length > 0 && <ListenerReviews reviews={reviews} />}
 
       {relatedLoading ? (
-        <div className="mx-auto max-w-[1200px] px-[120px] py-12">
+        <div className="mx-auto max-w-[1200px] px-4 md:px-8 lg:px-[120px] py-12">
           <BookGridSkeleton />
         </div>
       ) : relatedBooks.length > 0 ? (

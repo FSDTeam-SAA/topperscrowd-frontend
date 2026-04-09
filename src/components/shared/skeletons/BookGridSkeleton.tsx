@@ -11,7 +11,7 @@ export default function BookGridSkeleton({ count = 4 }: BookGridSkeletonProps) {
         <div className="h-8 w-64 rounded bg-slate-200" />
         <div className="mt-2 h-4 w-96 rounded bg-slate-200" />
       </div>
-      <div className="flex gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {Array.from({ length: count }).map((_, i) => (
           <BookCardSkeleton key={i} />
         ))}

@@ -38,7 +38,7 @@ export default function CategoryDetailPage({
         backgroundImage={image}
       />
 
-      <div className="mx-auto max-w-[1200px] py-16 flex flex-col gap-16">
+      <div className="mx-auto max-w-[1200px] px-4 md:px-6 lg:px-0 py-10 md:py-16 flex flex-col gap-10 md:gap-16">
         <CategoryCarousel categories={mappedCategories} />
 
         {booksLoading ? (

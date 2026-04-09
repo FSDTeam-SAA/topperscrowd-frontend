@@ -12,8 +12,8 @@ export default function Footer() {
   return (
     <footer className="bg-[#fff8f5] ">
       <div className="mx-auto container px-6 py-16">
-        <div className="grid grid-cols-5 gap-8 mb-12">
-          <div className="col-span-3 flex flex-col gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
+          <div className="md:col-span-2 lg:col-span-3 flex flex-col gap-2">
             <h2 className="font-serif text-4xl font-bold text-slate-900">
               Ka Thorian
             </h2>
@@ -38,7 +38,7 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="flex items-center justify-between border-t border-slate-500 pt-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-500 pt-4">
           <span className="text-xs text-slate-900">
             &copy; 2026 Ka Thorian. All rights reserved.
           </span>

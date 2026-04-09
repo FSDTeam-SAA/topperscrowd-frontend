@@ -32,7 +32,7 @@ export default function DashboardSidebar({
   ];
 
   return (
-    <aside className="w-[280px] border-r border-gray-200 bg-white p-6">
+    <aside className="w-full md:w-[280px] border-r border-gray-200 bg-white p-4 md:p-6">
       {/* User Card */}
       <div className="mb-8 rounded-lg bg-slate-50 p-4">
         <div className="mb-4 flex items-center gap-4">

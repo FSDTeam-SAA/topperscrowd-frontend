@@ -7,10 +7,9 @@ export async function getCart() {
 }
 
 export async function addToCart(items: { bookId: string; quantity: number }[]) {
-  const { data } = await api.post<ApiResponse<ApiCart>>(
-    "/api/v1/cart/add-to-cart",
-    { items },
-  );
+  const { data } = await api.post<ApiResponse<ApiCart>>("/cart/add-to-cart", {
+    items,
+  });
   return data;
 }
 
@@ -24,7 +23,7 @@ export async function updateCartQuantity(bookId: string, quantity: number) {
 
 export async function removeCartItem(bookId: string) {
   const { data } = await api.delete<ApiResponse<ApiCart>>(
-    `/api/v1/cart/remove-item/${bookId}`,
+    `/cart/remove-item/${bookId}`,
   );
   return data;
 }

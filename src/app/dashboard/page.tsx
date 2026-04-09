@@ -31,7 +31,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-8 py-6">
+      <div className="bg-white border-b border-gray-200 px-4 md:px-8 py-4 md:py-6">
         <h1 className="text-3xl font-bold text-slate-900">User Dashboard</h1>
         <p className="text-slate-600">
           Manage your account and track your orders
@@ -39,12 +39,12 @@ export default function DashboardPage() {
       </div>
 
       {/* Main Layout */}
-      <div className="flex">
+      <div className="flex flex-col md:flex-row">
         {/* Sidebar */}
         <DashboardSidebar activeTab={activeTab} onTabChange={setActiveTab} />
 
         {/* Content Area */}
-        <div className="flex-1 p-8">{renderContent()}</div>
+        <div className="flex-1 p-4 md:p-8">{renderContent()}</div>
       </div>
     </div>
   );

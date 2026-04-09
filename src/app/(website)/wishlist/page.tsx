@@ -27,18 +27,18 @@ export default function WishlistPage() {
   return (
     <div className="min-h-screen bg-[#fff8f5]">
       <div className="mx-auto container px-6">
-        <h1 className="mb-12 font-serif text-[32px] font-bold text-slate-900">
+        <h1 className="mb-8 md:mb-12 font-serif text-2xl md:text-[32px] font-bold text-slate-900">
           Wishlist
         </h1>
 
         {isLoading ? (
-          <div className="grid grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
               <BookCardSkeleton key={i} />
             ))}
           </div>
         ) : books.length > 0 ? (
-          <div className="grid grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {books.map((book) => (
               <WishlistCard
                 key={book.id}

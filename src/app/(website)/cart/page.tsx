@@ -55,9 +55,9 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-[#fff8f5]">
       <div className="mx-auto container px-6 overflow-hidden">
-        <div className="flex gap-20">
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-20">
           <div className="flex-1">
-            <h1 className="mb-10 font-serif text-[32px] font-bold text-slate-900">
+            <h1 className="mb-6 md:mb-10 font-serif text-2xl md:text-[32px] font-bold text-slate-900">
               Cart
             </h1>
 
