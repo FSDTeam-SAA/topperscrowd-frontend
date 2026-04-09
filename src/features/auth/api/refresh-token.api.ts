@@ -1,9 +1,8 @@
-// src/features/auth/api/refresh-token.api.ts
 import { api } from "@/lib/api";
 
 export const refreshAccessToken = async (refreshToken: string) => {
   try {
-    const response = await api.post("/auth/refresh-access-token", {
+    const response = await api.post("/auth/refresh-token", {
       refreshToken,
     });
     return response.data;
