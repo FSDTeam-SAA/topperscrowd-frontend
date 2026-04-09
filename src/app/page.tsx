@@ -1,8 +1,33 @@
+import Navbar from "@/components/shared/Navbar";
+import Footer from "@/components/shared/Footer";
+import HeroSection from "@/features/home/components/HeroSection";
+import FeaturedSection from "@/features/home/components/FeaturedSection";
+import BrowseCategorySection from "@/features/home/components/BrowseCategorySection";
+import NewArrivalsSection from "@/features/home/components/NewArrivalsSection";
+import FlashSaleSection from "@/features/home/components/FlashSaleSection";
+import SpecialOfferBanner from "@/features/home/components/SpecialOfferBanner";
+import {
+  featuredBooks,
+  newArrivals,
+  categories,
+  countdownUnits,
+} from "@/features/home/data";
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="text-4xl font-bold">Template Setup</h1>
-      <p className="mt-4 text-xl">The application root is ready.</p>
-    </main>
+    <div className="min-h-screen bg-[#fff8f5]">
+      <Navbar />
+      <HeroSection />
+
+      <section className="bg-slate-100">
+        <FeaturedSection books={featuredBooks} />
+        <BrowseCategorySection categories={categories} />
+        <NewArrivalsSection books={newArrivals} />
+        <FlashSaleSection countdownUnits={countdownUnits} />
+        <SpecialOfferBanner />
+      </section>
+
+      <Footer />
+    </div>
   );
 }
