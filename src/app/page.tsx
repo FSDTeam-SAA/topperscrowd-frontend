@@ -13,15 +13,19 @@ import {
 
 export default function Home() {
   return (
-    <div className="min-h-screen  container mx-auto px-6">
+    <div className="min-h-screen  ">
       <HeroSection />
 
       <section className="bg-slate-100 ">
-        <FeaturedSection books={featuredBooks} />
-        <BrowseCategorySection categories={categories} />
-        <NewArrivalsSection books={newArrivals} />
-        <FlashSaleSection countdownUnits={countdownUnits} />
-        <SpecialOfferBanner />
+        <div className=" px-6 py-16">
+          <FeaturedSection books={featuredBooks} />
+          <BrowseCategorySection categories={categories} />
+          <NewArrivalsSection books={newArrivals} />
+          <div className=" bg-[#fff8f5]">
+            <FlashSaleSection countdownUnits={countdownUnits} />
+          </div>
+          <SpecialOfferBanner />
+        </div>
       </section>
     </div>
   );

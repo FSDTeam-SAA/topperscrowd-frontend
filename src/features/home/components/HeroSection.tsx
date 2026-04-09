@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <section className="mx-auto flex max-w-[1200px] items-center justify-between py-16">
+    <section className="mx-auto flex items-center justify-between py-16 container mx-auto px-6">
       {/* Left */}
       <div className="flex w-[573px] flex-col gap-10">
         <div className="flex flex-col gap-6">

@@ -11,7 +11,7 @@ export default function BrowseCategorySection({
   categories,
 }: BrowseCategorySectionProps) {
   return (
-    <div className="relative mx-auto max-w-[1440px] px-[120px] py-24">
+    <div className="relative mx-auto container mx-auto py-24">
       {/* Blurred background */}
       <div className="absolute inset-0 overflow-hidden opacity-20 blur-sm">
         <Image

@@ -7,7 +7,7 @@ interface NewArrivalsSectionProps {
 
 export default function NewArrivalsSection({ books }: NewArrivalsSectionProps) {
   return (
-    <div className="mx-auto max-w-[1440px] px-[120px] py-24">
+    <div className="mx-auto container py-24">
       <BookGrid
         title="New Arrivals"
         subtitle="Fresh voices and new chapters in every genre."

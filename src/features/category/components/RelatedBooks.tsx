@@ -17,7 +17,7 @@ export default function RelatedBooks({
   if (related.length === 0) return null;
 
   return (
-    <div className="mx-auto max-w-[1200px] px-[120px] py-12">
+    <div className="mx-auto py-12">
       <BookGrid
         title="Recommended for You"
         subtitle=""

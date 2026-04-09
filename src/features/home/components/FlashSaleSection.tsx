@@ -10,7 +10,7 @@ export default function FlashSaleSection({
   countdownUnits,
 }: FlashSaleSectionProps) {
   return (
-    <div className="mx-auto flex max-w-[1440px] items-center gap-12 bg-[#fff8f5] px-[120px] py-24 rounded-2xl overflow-hidden">
+    <div className="flex items-center gap-12 mx-auto container py-24 rounded-2xl overflow-hidden ">
       {/* Left */}
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4">

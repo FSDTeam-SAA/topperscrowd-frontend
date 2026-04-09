@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 
 export default function SpecialOfferBanner() {
   return (
-    <div className="mx-auto max-w-[1440px] px-[120px] py-20">
+    <div className="mx-auto container py-20">
       <div className="flex items-center justify-between rounded-lg border border-[#e2e8f0] bg-white p-9">
         <div className="flex flex-col gap-4">
           <span className="w-fit rounded-full bg-indigo-600/10 px-3 py-1 text-xs font-bold text-indigo-600">
