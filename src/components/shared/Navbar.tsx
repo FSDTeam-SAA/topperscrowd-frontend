@@ -1,17 +1,44 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Heart, ShoppingBag, X, ChevronDown } from "lucide-react";
+import {
+  Search,
+  Heart,
+  ShoppingBag,
+  X,
+  ChevronDown,
+  Loader2,
+} from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
+import { useBooks } from "@/features/book/hooks/useBooks";
+import { useBookCategories } from "@/features/book-category/hooks/useBookCategories";
+import { mapApiCategoryToCategory } from "@/types/shared";
 
 export default function Navbar() {
   const { data: session } = useSession();
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(query.trim()), 300);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  const { data: booksRes, isLoading: searchLoading } = useBooks(
+    debouncedQuery ? { search: debouncedQuery, limit: 6 } : undefined,
+  );
+  const { data: categories } = useBookCategories();
+  const searchResults = booksRes?.data ?? [];
+  const mappedCategories = useMemo(
+    () => (categories ?? []).map(mapApiCategoryToCategory).slice(0, 6),
+    [categories],
+  );
 
   useEffect(() => {
     if (!searchOpen) return;
@@ -193,25 +220,70 @@ export default function Navbar() {
 
           <div className="my-4 h-px bg-slate-100" />
 
-          {/* Quick Links / Suggestions */}
-          <div className="flex flex-col gap-3">
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
-              Quick Links
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {["Sci-Fi", "Classic Literature", "Mystery", "Horror"].map(
-                (tag) => (
-                  <Link
-                    key={tag}
-                    href={`/category/${tag.toLowerCase().replace(/\s+/g, "-")}`}
-                    onClick={() => setSearchOpen(false)}
-                    className="rounded-full bg-slate-100 px-4 py-1.5 text-sm text-slate-600 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
-                  >
-                    {tag}
-                  </Link>
-                ),
-              )}
-            </div>
+          {/* Search Results or Quick Links */}
+          <div className="max-h-[400px] overflow-y-auto">
+            {debouncedQuery ? (
+              <div className="flex flex-col gap-2">
+                {searchLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="size-6 animate-spin text-indigo-600" />
+                  </div>
+                ) : searchResults.length > 0 ? (
+                  searchResults.map((book) => (
+                    <Link
+                      key={book._id}
+                      href={`/category/${typeof book.genre === "object" ? book.genre._id : book.genre}/${book._id}`}
+                      onClick={() => {
+                        setSearchOpen(false);
+                        setQuery("");
+                      }}
+                      className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-slate-50"
+                    >
+                      <div className="relative size-12 shrink-0 overflow-hidden rounded">
+                        <Image
+                          src={
+                            book.image?.secure_url || "/images/home/book1.png"
+                          }
+                          alt={book.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="truncate text-sm font-medium text-slate-900">
+                          {book.title}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          {book.author} · ${book.price}
+                        </p>
+                      </div>
+                    </Link>
+                  ))
+                ) : (
+                  <p className="py-8 text-center text-sm text-slate-400">
+                    No books found for &ldquo;{debouncedQuery}&rdquo;
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+                  Browse Categories
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {mappedCategories.map((cat) => (
+                    <Link
+                      key={cat.slug}
+                      href={`/category/${cat.slug}`}
+                      onClick={() => setSearchOpen(false)}
+                      className="rounded-full bg-slate-100 px-4 py-1.5 text-sm text-slate-600 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+                    >
+                      {cat.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Keyboard hint */}

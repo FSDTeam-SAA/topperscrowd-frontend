@@ -30,29 +30,35 @@ export default function BrowseCategorySection({
 
         <div className="flex gap-4">
           {/* Large card */}
-          <CategoryCard
-            category={categories[0]}
-            className="h-[376px] w-[506px] bg-neutral-900"
-          />
+          {categories[0] && (
+            <CategoryCard
+              category={categories[0]}
+              className="h-[376px] w-[506px] bg-neutral-900"
+            />
+          )}
 
           {/* Right column */}
           <div className="flex flex-1 flex-col gap-3">
-            {/* Classic Literature — wide */}
-            <CategoryCard
-              category={categories[1]}
-              className="h-[168px] w-full bg-neutral-900"
-            />
+            {categories[1] && (
+              <CategoryCard
+                category={categories[1]}
+                className="h-[168px] w-full bg-neutral-900"
+              />
+            )}
 
-            {/* Two smaller cards */}
             <div className="flex gap-4">
-              <CategoryCard
-                category={categories[2]}
-                className="h-[196px] w-[330px] bg-neutral-900"
-              />
-              <CategoryCard
-                category={categories[3]}
-                className="h-[196px] w-[330px] bg-neutral-900"
-              />
+              {categories[2] && (
+                <CategoryCard
+                  category={categories[2]}
+                  className="h-[196px] w-[330px] bg-neutral-900"
+                />
+              )}
+              {categories[3] && (
+                <CategoryCard
+                  category={categories[3]}
+                  className="h-[196px] w-[330px] bg-neutral-900"
+                />
+              )}
             </div>
           </div>
         </div>

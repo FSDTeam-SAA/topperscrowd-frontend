@@ -1,41 +1,58 @@
-import { notFound } from "next/navigation";
-import Navbar from "@/components/shared/Navbar";
-import Footer from "@/components/shared/Footer";
+"use client";
+
+import { use } from "react";
 import PageHeroBanner from "@/components/shared/PageHeroBanner";
-import CategoryBookSection from "@/features/category/components/CategoryBookSection";
 import CategoryCarousel from "@/features/category/components/CategoryCarousel";
-import {
-  categoriesWithBooks,
-  getCategoryBySlug,
-} from "@/features/category/data";
+import BookGrid from "@/components/shared/BookGrid";
+import BookGridSkeleton from "@/components/shared/skeletons/BookGridSkeleton";
+import { useBookCategory } from "@/features/book-category/hooks/useBookCategories";
+import { useBookCategories } from "@/features/book-category/hooks/useBookCategories";
+import { useBooksByCategory } from "@/features/book/hooks/useBooks";
+import { mapApiBookToBook, mapApiCategoryToCategory } from "@/types/shared";
 
 interface CategoryDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default async function CategoryDetailPage({
+export default function CategoryDetailPage({
   params,
 }: CategoryDetailPageProps) {
-  const { slug } = await params;
-  const category = getCategoryBySlug(slug);
+  const { slug } = use(params);
+  const { data: category, isLoading: catLoading } = useBookCategory(slug);
+  const { data: allCategories } = useBookCategories();
+  const { data: booksRes, isLoading: booksLoading } = useBooksByCategory(slug);
 
-  if (!category) notFound();
+  const books = (booksRes?.data ?? []).map(mapApiBookToBook);
+  const mappedCategories = (allCategories ?? []).map(mapApiCategoryToCategory);
+
+  const title = category?.title?.trim() || "Category";
+  const subtitle = category?.description?.trim() || "";
+  const image =
+    category?.image?.secure_url || "/images/home/category-horror.png";
 
   return (
     <div className="min-h-screen bg-[#fff8f5]">
-      <Navbar />
       <PageHeroBanner
-        title={category.title}
-        subtitle={category.subtitle}
-        backgroundImage={category.image}
+        title={catLoading ? "Loading..." : title}
+        subtitle={subtitle}
+        backgroundImage={image}
       />
 
       <div className="mx-auto max-w-[1200px] py-16 flex flex-col gap-16">
-        <CategoryCarousel categories={categoriesWithBooks} />
-        <CategoryBookSection category={category} />
-      </div>
+        <CategoryCarousel categories={mappedCategories} />
 
-      <Footer />
+        {booksLoading ? (
+          <BookGridSkeleton />
+        ) : (
+          <BookGrid
+            title={`${title} Audiobooks`}
+            subtitle={`Enjoy all the ${title.toLowerCase()} books`}
+            books={books.slice(0, 4)}
+            categorySlug={slug}
+            viewAllHref={`/category/${slug}/all`}
+          />
+        )}
+      </div>
     </div>
   );
 }

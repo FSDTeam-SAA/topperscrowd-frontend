@@ -17,7 +17,7 @@ export default function CategoryCard({
   return (
     <Link
       href={`/category/${category.slug}`}
-      className={`relative block overflow-hidden rounded-xl group ${className}`}
+      className={`relative block overflow-hidden  rounded-xl group ${className}`}
     >
       <div className="absolute inset-0">
         <Image

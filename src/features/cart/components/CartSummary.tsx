@@ -7,6 +7,7 @@ interface CartSummaryProps {
   vat: number;
   discount: number;
   onPurchase: () => void;
+  purchasing?: boolean;
 }
 
 export default function CartSummary({
@@ -14,6 +15,7 @@ export default function CartSummary({
   vat,
   discount,
   onPurchase,
+  purchasing = false,
 }: CartSummaryProps) {
   const [promoCode, setPromoCode] = useState("");
   const total = subtotal + vat - discount;
@@ -24,7 +26,6 @@ export default function CartSummary({
         Cart Summary
       </h2>
 
-      {/* Promo Code */}
       <div className="mt-6 flex gap-3">
         <input
           type="text"
@@ -38,7 +39,6 @@ export default function CartSummary({
         </button>
       </div>
 
-      {/* Summary Table */}
       <div className="mt-8 overflow-hidden rounded-lg border border-slate-200">
         <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3.5 text-sm text-slate-900">
           <span className="font-medium">Subtotal</span>
@@ -58,12 +58,12 @@ export default function CartSummary({
         </div>
       </div>
 
-      {/* Purchase Button */}
       <button
         onClick={onPurchase}
-        className="mt-6 w-full rounded-lg bg-indigo-600 py-3 text-base font-semibold text-white transition-colors hover:bg-indigo-700"
+        disabled={purchasing}
+        className="mt-6 w-full rounded-lg bg-indigo-600 py-3 text-base font-semibold text-white transition-colors hover:bg-indigo-700 disabled:opacity-50"
       >
-        Purchase
+        {purchasing ? "Processing..." : "Purchase"}
       </button>
     </div>
   );

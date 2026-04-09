@@ -1,85 +1,27 @@
 "use client";
 
 import WishlistCard from "@/features/wishlist/components/WishlistCard";
-import { useState } from "react";
-import type { Book } from "@/types/shared";
-
-const mockWishlistItems: Book[] = [
-  {
-    id: "1",
-    image: "/images/home/book1.png",
-    title: "The Power of Habit",
-    author: "Charles Duhigg",
-    rating: 5.0,
-    price: "$14.99",
-  },
-  {
-    id: "2",
-    image: "/images/home/book2.png",
-    title: "The Power of Habit",
-    author: "Charles Duhigg",
-    rating: 5.0,
-    price: "$14.99",
-  },
-  {
-    id: "3",
-    image: "/images/home/book3.png",
-    title: "The Power of Habit",
-    author: "Charles Duhigg",
-    rating: 5.0,
-    price: "$14.99",
-  },
-  {
-    id: "4",
-    image: "/images/home/book4.png",
-    title: "The Power of Habit",
-    author: "Charles Duhigg",
-    rating: 5.0,
-    price: "$14.99",
-  },
-  {
-    id: "5",
-    image: "/images/home/book1.png",
-    title: "The Power of Habit",
-    author: "Charles Duhigg",
-    rating: 5.0,
-    price: "$14.99",
-  },
-  {
-    id: "6",
-    image: "/images/home/book2.png",
-    title: "The Power of Habit",
-    author: "Charles Duhigg",
-    rating: 5.0,
-    price: "$14.99",
-  },
-  {
-    id: "7",
-    image: "/images/home/book3.png",
-    title: "The Power of Habit",
-    author: "Charles Duhigg",
-    rating: 5.0,
-    price: "$14.99",
-  },
-  {
-    id: "8",
-    image: "/images/home/book4.png",
-    title: "The Power of Habit",
-    author: "Charles Duhigg",
-    rating: 5.0,
-    price: "$14.99",
-  },
-];
+import BookCardSkeleton from "@/components/shared/skeletons/BookCardSkeleton";
+import {
+  useFavorites,
+  useToggleFavorite,
+} from "@/features/favorites/hooks/useFavorites";
+import { useAddToCart } from "@/features/cart/hooks/useCart";
+import { mapApiBookToBook } from "@/types/shared";
 
 export default function WishlistPage() {
-  const [wishlistItems, setWishlistItems] = useState(mockWishlistItems);
+  const { data: favRes, isLoading } = useFavorites();
+  const toggleFavorite = useToggleFavorite();
+  const addToCart = useAddToCart();
+
+  const books = (favRes?.data ?? []).map(mapApiBookToBook);
 
   const handleRemoveItem = (id: string) => {
-    setWishlistItems(wishlistItems.filter((item) => item.id !== id));
+    toggleFavorite.mutate(id);
   };
 
   const handleAddToCart = (id: string) => {
-    alert(`Item ${id} added to cart!`);
+    addToCart.mutate([{ bookId: id, quantity: 1 }]);
   };
 
   return (
@@ -89,12 +31,18 @@ export default function WishlistPage() {
           Wishlist
         </h1>
 
-        {wishlistItems.length > 0 ? (
+        {isLoading ? (
           <div className="grid grid-cols-4 gap-6">
-            {wishlistItems.map((item) => (
+            {Array.from({ length: 8 }).map((_, i) => (
+              <BookCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : books.length > 0 ? (
+          <div className="grid grid-cols-4 gap-6">
+            {books.map((book) => (
               <WishlistCard
-                key={item.id}
-                book={item}
+                key={book.id}
+                book={book}
                 onRemove={handleRemoveItem}
                 onAddToCart={handleAddToCart}
               />

@@ -1,75 +1,89 @@
 "use client";
 
-import Navbar from "@/components/shared/Navbar";
-import Footer from "@/components/shared/Footer";
 import CartItem from "@/features/cart/components/CartItem";
 import CartSummary from "@/features/cart/components/CartSummary";
+import CartItemSkeleton from "@/components/shared/skeletons/CartItemSkeleton";
+import {
+  useCart,
+  useRemoveCartItem,
+  useUpdateCartQuantity,
+} from "@/features/cart/hooks/useCart";
+import { checkout } from "@/features/order/api/order.api";
+import { toast } from "sonner";
 import { useState } from "react";
 
-const mockCartItems = [
-  {
-    id: "1",
-    image: "/images/home/book1.png",
-    title: "The Lighthouse",
-    author: "Elias Theron",
-    pages: 196,
-    language: "English",
-    publisher: "University Press",
-    price: 13.99,
-  },
-  {
-    id: "2",
-    image: "/images/home/book1.png",
-    title: "The Lighthouse",
-    author: "Elias Theron",
-    pages: 196,
-    language: "English",
-    publisher: "University Press",
-    price: 13.99,
-  },
-  {
-    id: "3",
-    image: "/images/home/book1.png",
-    title: "The Lighthouse",
-    author: "Elias Theron",
-    pages: 196,
-    language: "English",
-    publisher: "University Press",
-    price: 13.99,
-  },
-];
-
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState(mockCartItems);
-  const subtotal = 450.0;
-  const vat = 80.0;
-  const discount = 50.0;
+  const { data: cart, isLoading } = useCart();
+  const removeItem = useRemoveCartItem();
+  const updateQuantity = useUpdateCartQuantity();
+  const [purchasing, setPurchasing] = useState(false);
 
-  const handleRemoveItem = (id: string) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
+  const items = cart?.items ?? [];
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.book.price * item.quantity,
+    0,
+  );
+  const vat = Number((subtotal * 0.15).toFixed(2));
+  const discount = 0;
+
+  const handleRemoveItem = (bookId: string) => {
+    removeItem.mutate(bookId);
   };
 
-  const handlePurchase = () => {
-    alert("Proceeding to checkout...");
+  const handleUpdateQuantity = (bookId: string, quantity: number) => {
+    updateQuantity.mutate({ bookId, quantity });
+  };
+
+  const handlePurchase = async () => {
+    if (items.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
+    setPurchasing(true);
+    try {
+      const res = await checkout({ orderType: "cart" });
+      if (res.data?.checkoutUrl) {
+        window.location.href = res.data.checkoutUrl;
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Checkout failed");
+    } finally {
+      setPurchasing(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#fff8f5]">
       <div className="mx-auto container px-6 overflow-hidden">
         <div className="flex gap-20">
-          {/* Cart Items */}
           <div className="flex-1">
             <h1 className="mb-10 font-serif text-[32px] font-bold text-slate-900">
               Cart
             </h1>
 
-            {cartItems.length > 0 ? (
+            {isLoading ? (
               <div className="space-y-8">
-                {cartItems.map((item) => (
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <CartItemSkeleton key={i} />
+                ))}
+              </div>
+            ) : items.length > 0 ? (
+              <div className="space-y-8">
+                {items.map((item) => (
                   <CartItem
-                    key={item.id}
-                    {...item}
+                    key={item._id}
+                    id={item.book._id}
+                    image={
+                      item.book.image?.secure_url || "/images/home/book1.png"
+                    }
+                    title={item.book.title}
+                    author={item.book.author}
+                    language={item.book.language}
+                    publisher={item.book.publisher}
+                    price={item.book.price}
+                    quantity={item.quantity}
                     onRemove={handleRemoveItem}
+                    onUpdateQuantity={handleUpdateQuantity}
                   />
                 ))}
               </div>
@@ -80,12 +94,12 @@ export default function CartPage() {
             )}
           </div>
 
-          {/* Cart Summary */}
           <CartSummary
             subtotal={subtotal}
             vat={vat}
             discount={discount}
             onPurchase={handlePurchase}
+            purchasing={purchasing}
           />
         </div>
       </div>
