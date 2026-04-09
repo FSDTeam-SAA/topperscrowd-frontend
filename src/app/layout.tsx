@@ -12,9 +12,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "sktch Labs",
-  description:
-    "Design amazing digital experiences that create more happy in the world.",
+  title: "Thorium - A platform for learning and sharing knowledge",
+  description: "",
 };
 
 export default function RootLayout({
@@ -24,9 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} antialiased`}>
+      <body className={`${poppins.variable} antialiased bg-[#fff8f5]`}>
         <MainProviders>
-          <Provider> {children} </Provider>
+          <Provider>{children}</Provider>
         </MainProviders>
         <Toaster position="top-right" closeButton />
       </body>

@@ -1,0 +1,291 @@
+import type { CategoryWithBooks } from "./types";
+import type { Review } from "@/types/shared";
+
+const defaultDescription = `Set against the backdrop of a storm-ridden ocean, Makndek follows a lone lighthouse keeper who begins to question reality as strange occurrences unfold night after night. Is it isolation playing tricks on his mind, or is something far more sinister hidden beneath the waves?
+
+As the storm intensifies, so does the mystery. Voices echo through the wind, shadows move where none should exist, and a forgotten past slowly resurfaces. The line between imagination and reality blurs, pulling listeners into a deeply immersive psychological experience.
+
+This audiobook blends atmospheric storytelling with emotional depth, making it a gripping listen for fans of suspense and introspective narratives. Amid crashing waves and an endless stretch of dark ocean, a solitary lighthouse stands as the last beacon of hope—and the center of an unfolding mystery. Makndek follows a reclusive lighthouse keeper whose quiet routine is disrupted by a relentless storm and a series of unexplainable.
+
+As nights grow longer and the sea more violent, he begins to hear whispers carried by the wind and sees shadows moving through the fog. What first feels like isolation slowly turns into something far more disturbing. Memories he cannot trust begin to surface, and the line between reality and illusion fades.
+With each passing moment, the lighthouse becomes both a sanctuary and a prison. The truth lies buried beneath the waves—but uncovering it may cost him his sanity.
+A deeply atmospheric and psychological audiobook, Makndek pulls listeners into a haunting journey of fear, solitude, and hidden truths.`;
+
+export const categoriesWithBooks: CategoryWithBooks[] = [
+  {
+    slug: "sci-fi-cyberpunk",
+    title: "Sci-Fi & Cyberpunk",
+    subtitle: "Neon worlds and digital dreams.",
+    image: "/images/home/category-scifi.png",
+    books: [
+      {
+        id: "scifi-1",
+        title: "MAKNDEK",
+        author: "Elias Theron",
+        price: "$13.99",
+        rating: 4.0,
+        ratingCount: 456,
+        image: "/images/home/book1.png",
+        description: defaultDescription,
+        pages: 196,
+        language: "English",
+        publisher: "University Press",
+      },
+      {
+        id: "scifi-2",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 312,
+        image: "/images/home/book2.png",
+        description: defaultDescription,
+        pages: 224,
+        language: "English",
+        publisher: "Random House",
+      },
+      {
+        id: "scifi-3",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 289,
+        image: "/images/home/book3.png",
+        description: defaultDescription,
+        pages: 180,
+        language: "English",
+        publisher: "Penguin Books",
+      },
+      {
+        id: "scifi-4",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 145,
+        image: "/images/home/book4.png",
+        description: defaultDescription,
+        pages: 210,
+        language: "English",
+        publisher: "HarperCollins",
+      },
+    ],
+  },
+  {
+    slug: "classic-literature",
+    title: "Classic Literature",
+    subtitle: "140 Curated Titles",
+    image: "/images/home/category-classic.png",
+    books: [
+      {
+        id: "classic-1",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 520,
+        image: "/images/home/book3.png",
+        description: defaultDescription,
+        pages: 196,
+        language: "English",
+        publisher: "University Press",
+      },
+      {
+        id: "classic-2",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 340,
+        image: "/images/home/book4.png",
+        description: defaultDescription,
+        pages: 224,
+        language: "English",
+        publisher: "Random House",
+      },
+      {
+        id: "classic-3",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 210,
+        image: "/images/home/book1.png",
+        description: defaultDescription,
+        pages: 180,
+        language: "English",
+        publisher: "Penguin Books",
+      },
+      {
+        id: "classic-4",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 178,
+        image: "/images/home/book2.png",
+        description: defaultDescription,
+        pages: 210,
+        language: "English",
+        publisher: "HarperCollins",
+      },
+    ],
+  },
+  {
+    slug: "mystery",
+    title: "Mystery",
+    subtitle: "Unravel the unknown.",
+    image: "/images/home/category-mystery.png",
+    books: [
+      {
+        id: "mystery-1",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 430,
+        image: "/images/home/book2.png",
+        description: defaultDescription,
+        pages: 196,
+        language: "English",
+        publisher: "University Press",
+      },
+      {
+        id: "mystery-2",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 265,
+        image: "/images/home/book1.png",
+        description: defaultDescription,
+        pages: 224,
+        language: "English",
+        publisher: "Random House",
+      },
+      {
+        id: "mystery-3",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 198,
+        image: "/images/home/book4.png",
+        description: defaultDescription,
+        pages: 180,
+        language: "English",
+        publisher: "Penguin Books",
+      },
+      {
+        id: "mystery-4",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 156,
+        image: "/images/home/book3.png",
+        description: defaultDescription,
+        pages: 210,
+        language: "English",
+        publisher: "HarperCollins",
+      },
+    ],
+  },
+  {
+    slug: "horror",
+    title: "Horror",
+    subtitle: "Fear the unknown.",
+    image: "/images/home/category-horror.png",
+    books: [
+      {
+        id: "horror-1",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 380,
+        image: "/images/home/book1.png",
+        description: defaultDescription,
+        pages: 196,
+        language: "English",
+        publisher: "University Press",
+      },
+      {
+        id: "horror-2",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 290,
+        image: "/images/home/book2.png",
+        description: defaultDescription,
+        pages: 224,
+        language: "English",
+        publisher: "Random House",
+      },
+      {
+        id: "horror-3",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 175,
+        image: "/images/home/book3.png",
+        description: defaultDescription,
+        pages: 180,
+        language: "English",
+        publisher: "Penguin Books",
+      },
+      {
+        id: "horror-4",
+        title: "The Power of Habit",
+        author: "Charles Duhigg",
+        price: "$14.99",
+        rating: 5.0,
+        ratingCount: 142,
+        image: "/images/home/book4.png",
+        description: defaultDescription,
+        pages: 210,
+        language: "English",
+        publisher: "HarperCollins",
+      },
+    ],
+  },
+];
+
+export const productReviews: Review[] = [
+  {
+    id: "review-1",
+    text: "\"The sound production is unlike any other platform. It's not just an audiobook; it's a soundscape. I felt like I was standing in the rain.\"",
+    author: "Elena R.",
+    avatar: "/images/home/listener1.png",
+    rating: 5,
+  },
+  {
+    id: "review-2",
+    text: '"The dark mode interface is so easy on the eyes for late-night browsing. The focus on narrators is what sets this apart."',
+    author: "Marcos L.",
+    avatar: "/images/home/listener2.png",
+    rating: 5,
+  },
+  {
+    id: "review-3",
+    text: "\"The sound production is unlike any other platform. It's not just an audiobook; it's a soundscape. I felt like I was standing in the rain.\"",
+    author: "Sarah T.",
+    avatar: "/images/home/listener1.png",
+    rating: 5,
+  },
+];
+
+export function getCategoryBySlug(slug: string) {
+  return categoriesWithBooks.find((c) => c.slug === slug);
+}
+
+export function getBookById(categorySlug: string, bookId: string) {
+  const category = getCategoryBySlug(categorySlug);
+  if (!category) return null;
+  const book = category.books.find((b) => b.id === bookId);
+  if (!book) return null;
+  return { book, category };
+}
