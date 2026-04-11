@@ -8,97 +8,9 @@ import {
   MoreVertical,
   ChevronLeft,
   ChevronRight,
+  Loader2,
 } from "lucide-react";
-import { AudioBook } from "../types/audioBooks.types";
-
-// --- Mock Audio Books Data ---
-
-const allAudioBooks: AudioBook[] = [
-  {
-    name: "The Future of Solar Energy",
-    author: "Bogdán Norbert",
-    category: "Bogdán Norbert",
-    price: "$24.99",
-    status: "Published",
-  },
-  {
-    name: "Advances in AI Technology",
-    author: "Maria Chen",
-    category: "Maria Chen",
-    price: "$19.99",
-    status: "Published",
-  },
-  {
-    name: "Understanding Quantum Computing",
-    author: "Alex Rodriguez",
-    category: "Alex Rodriguez",
-    price: "$29.99",
-    status: "Published",
-  },
-  {
-    name: "The Rise of Electric Vehicles",
-    author: "Lisa Tran",
-    category: "Lisa Tran",
-    price: "$22.50",
-    status: "Published",
-  },
-  {
-    name: "Blockchain: Beyond Cryptocurrencies",
-    author: "John Smith",
-    category: "John Smith",
-    price: "$30.00",
-    status: "Published",
-  },
-  {
-    name: "Sustainable Urban Development",
-    author: "Emily Davis",
-    category: "Emily Davis",
-    price: "$27.99",
-    status: "Published",
-  },
-  {
-    name: "The Impact of Climate Change",
-    author: "David Lee",
-    category: "David Lee",
-    price: "$19.99",
-    status: "Published",
-  },
-  {
-    name: "Innovations in Agriculture",
-    author: "Sophia Jackson",
-    category: "Sophia Jackson",
-    price: "$25.00",
-    status: "Published",
-  },
-  {
-    name: "The Future of Remote Work",
-    author: "Michael Johnson",
-    category: "Michael Johnson",
-    price: "$18.99",
-    status: "Published",
-  },
-  {
-    name: "Cybersecurity in the Modern Age",
-    author: "Olivia Brown",
-    category: "Olivia Brown",
-    price: "$24.50",
-    status: "Published",
-  },
-  {
-    name: "Advancements in Biotechnology",
-    author: "James White",
-    category: "James White",
-    price: "$33.00",
-    status: "Published",
-  },
-  {
-    name: "Exploring Renewable Resources",
-    author: "Grace Wilson",
-    category: "Grace Wilson",
-    price: "$21.75",
-    status: "Published",
-  },
-];
+import { useAudioBooks } from "../hooks/useAudioBooks";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -106,18 +18,45 @@ export default function AudioBooks() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredBooks = allAudioBooks.filter(
-    (book) =>
-      book.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const { data, isLoading, error } = useAudioBooks(currentPage, ITEMS_PER_PAGE);
 
-  const totalPages = Math.ceil(filteredBooks.length / ITEMS_PER_PAGE);
+  const audioBooks = data?.data?.data ?? [];
+  const meta = data?.data?.meta;
+  const totalPages = meta?.totalPage ?? 1;
+  const total = meta?.total ?? 0;
+
+  const filteredBooks = searchQuery
+    ? audioBooks.filter(
+        (book) =>
+          book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          book.author.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
+    : audioBooks;
+
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedBooks = filteredBooks.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE,
-  );
+
+  const statusStyles: Record<string, string> = {
+    active: "bg-[rgba(19,236,91,0.2)] text-[#004242]",
+    inactive: "bg-[#fef3c7] text-[#b45309]",
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center rounded-lg border border-[#cecece] bg-white">
+        <Loader2 className="size-8 animate-spin text-[#4f46e5]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center rounded-lg border border-[#cecece] bg-white">
+        <p className="text-red-500">
+          Failed to load audio books. Please try again.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-lg border border-[#cecece] bg-white p-6">
@@ -141,7 +80,6 @@ export default function AudioBooks() {
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                setCurrentPage(1);
               }}
               className="flex-1 rounded-l-lg border border-[#727272] px-4 text-base text-[#3b3b3b] placeholder:text-[#6c6c6c] focus:outline-none focus:border-[#4f46e5]"
             />
@@ -190,32 +128,47 @@ export default function AudioBooks() {
             </tr>
           </thead>
           <tbody>
-            {paginatedBooks.map((book, i) => (
-              <tr key={i} className="border border-[#e4e4e4] bg-white">
-                <td className="max-w-[200px] truncate px-4 py-4 text-left text-lg text-[#0f172a]">
-                  {book.name}
-                </td>
-                <td className="px-4 py-4 text-center text-xs font-medium text-black">
-                  {book.author}
-                </td>
-                <td className="px-4 py-4 text-center text-xs font-medium text-black">
-                  {book.category}
-                </td>
-                <td className="px-4 py-4 text-center text-base text-[#111]">
-                  {book.price}
-                </td>
-                <td className="px-4 py-4 text-center">
-                  <span className="inline-block rounded-full bg-[rgba(19,236,91,0.2)] px-3 py-1 text-xs font-bold text-[#004242]">
-                    {book.status}
-                  </span>
-                </td>
-                <td className="px-4 py-4 text-center">
-                  <button className="rounded-full p-2 transition-colors hover:bg-gray-100">
-                    <MoreVertical className="size-5 text-[#3b3b3b]" />
-                  </button>
+            {filteredBooks.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-4 py-8 text-center text-[#6b6b6b]"
+                >
+                  No audio books found.
                 </td>
               </tr>
-            ))}
+            ) : (
+              filteredBooks.map((book) => (
+                <tr key={book._id} className="border border-[#e4e4e4] bg-white">
+                  <td className="max-w-[200px] truncate px-4 py-4 text-left text-lg text-[#0f172a]">
+                    {book.title}
+                  </td>
+                  <td className="px-4 py-4 text-center text-xs font-medium text-black">
+                    {book.author}
+                  </td>
+                  <td className="px-4 py-4 text-center text-xs font-medium text-black">
+                    {book.genre.title}
+                  </td>
+                  <td className="px-4 py-4 text-center text-base text-[#111]">
+                    ${book.price.toFixed(2)}
+                  </td>
+                  <td className="px-4 py-4 text-center">
+                    <span
+                      className={`inline-block rounded-full px-3 py-1 text-xs font-bold capitalize ${
+                        statusStyles[book.status] ?? statusStyles.active
+                      }`}
+                    >
+                      {book.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-4 text-center">
+                    <button className="rounded-full p-2 transition-colors hover:bg-gray-100">
+                      <MoreVertical className="size-5 text-[#3b3b3b]" />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
 
@@ -223,8 +176,7 @@ export default function AudioBooks() {
         <div className="flex items-center justify-between px-12 py-5">
           <p className="text-sm text-[#3b3b3b]">
             Showing {startIndex + 1} to{" "}
-            {Math.min(startIndex + ITEMS_PER_PAGE, filteredBooks.length)} of{" "}
-            {filteredBooks.length} results
+            {Math.min(startIndex + ITEMS_PER_PAGE, total)} of {total} results
           </p>
 
           <div className="flex items-center gap-2">

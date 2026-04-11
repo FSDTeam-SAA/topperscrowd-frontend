@@ -1,14 +1,12 @@
-// src/features/adminDashboard/audioBooks/hooks/useAudioBooks.ts
+import { useQuery } from "@tanstack/react-query";
+import { fetchAudioBooks } from "../api/audioBooks.api";
 
-// import { useQuery } from "@tanstack/react-query";
-// import { fetchAudioBooks } from "../api/audioBooks.api";
-
-// export const useAudioBooks = () => {
-//   return useQuery({
-//     queryKey: ["audioBooks"],
-//     queryFn: fetchAudioBooks,
-//     staleTime: 5 * 60 * 1000,
-//     refetchOnWindowFocus: false,
-//     refetchOnReconnect: false,
-//   });
-// };
+export const useAudioBooks = (page: number = 1, limit: number = 10) => {
+  return useQuery({
+    queryKey: ["audioBooks", page, limit],
+    queryFn: () => fetchAudioBooks(page, limit),
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+};

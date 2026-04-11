@@ -1,14 +1,12 @@
-// src/features/adminDashboard/usersManagement/hooks/useUsersManagement.ts
+import { useQuery } from "@tanstack/react-query";
+import { fetchUsers } from "../api/usersManagement.api";
 
-// import { useQuery } from "@tanstack/react-query";
-// import { fetchUsers } from "../api/usersManagement.api";
-
-// export const useUsersManagement = () => {
-//   return useQuery({
-//     queryKey: ["usersManagement"],
-//     queryFn: fetchUsers,
-//     staleTime: 5 * 60 * 1000,
-//     refetchOnWindowFocus: false,
-//     refetchOnReconnect: false,
-//   });
-// };
+export const useUsersManagement = (page: number = 1, limit: number = 10) => {
+  return useQuery({
+    queryKey: ["usersManagement", page, limit],
+    queryFn: () => fetchUsers(page, limit),
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+};

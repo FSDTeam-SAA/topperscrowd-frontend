@@ -1,85 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
-import { User } from "../types/usersManagement.types";
-
-// --- Mock Users Data ---
-
-const allUsers: User[] = [
-  {
-    name: "Paris dimension",
-    email: "example@gmail.com",
-    phone: "+02463245",
-    totalOrder: 0,
-  },
-  {
-    name: "Paris dimension",
-    email: "example@gmail.com",
-    phone: "+02463245",
-    totalOrder: 2,
-  },
-  {
-    name: "Paris dimension",
-    email: "example@gmail.com",
-    phone: "+02463245",
-    totalOrder: 5,
-  },
-  {
-    name: "Paris dimension",
-    email: "example@gmail.com",
-    phone: "+02463245",
-    totalOrder: 0,
-  },
-  {
-    name: "Paris dimension",
-    email: "example@gmail.com",
-    phone: "+02463245",
-    totalOrder: 5,
-  },
-  {
-    name: "Paris dimension",
-    email: "example@gmail.com",
-    phone: "+02463245",
-    totalOrder: 1,
-  },
-  {
-    name: "Paris dimension",
-    email: "example@gmail.com",
-    phone: "+02463245",
-    totalOrder: 1,
-  },
-  {
-    name: "Paris dimension",
-    email: "example@gmail.com",
-    phone: "+02463245",
-    totalOrder: 2,
-  },
-  {
-    name: "Paris dimension",
-    email: "example@gmail.com",
-    phone: "+02463245",
-    totalOrder: 2,
-  },
-  {
-    name: "Paris dimension",
-    email: "example@gmail.com",
-    phone: "+02463245",
-    totalOrder: 5,
-  },
-  {
-    name: "Paris dimension",
-    email: "example@gmail.com",
-    phone: "+02463245",
-    totalOrder: 5,
-  },
-  {
-    name: "Paris dimension",
-    email: "example@gmail.com",
-    phone: "+02463245",
-    totalOrder: 3,
-  },
-];
+import { Search, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { useUsersManagement } from "../hooks/useUsersManagement";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -87,19 +10,43 @@ export default function UsersManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredUsers = allUsers.filter(
-    (user) =>
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.phone.includes(searchQuery),
+  const { data, isLoading, error } = useUsersManagement(
+    currentPage,
+    ITEMS_PER_PAGE,
   );
 
-  const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
+  const users = data?.data?.data ?? [];
+  const meta = data?.data?.meta;
+  const totalPages = meta?.totalPage ?? 1;
+  const total = meta?.total ?? 0;
+
+  const filteredUsers = searchQuery
+    ? users.filter(
+        (user) =>
+          `${user.firstName} ${user.lastName}`
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          user.email.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
+    : users;
+
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedUsers = filteredUsers.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE,
-  );
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center rounded-lg border border-[#cecece] bg-white">
+        <Loader2 className="size-8 animate-spin text-[#4f46e5]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center rounded-lg border border-[#cecece] bg-white">
+        <p className="text-red-500">Failed to load users. Please try again.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-lg border border-[#cecece] bg-white p-6">
@@ -124,7 +71,6 @@ export default function UsersManagement() {
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
-              setCurrentPage(1);
             }}
             className="flex-1 rounded-l-lg border border-[#727272] px-4 text-base text-[#3b3b3b] placeholder:text-[#6c6c6c] focus:outline-none focus:border-[#4f46e5]"
           />
@@ -146,7 +92,7 @@ export default function UsersManagement() {
                 Email
               </th>
               <th className="px-4 py-4 text-center text-base font-bold text-[#181919]">
-                Phone Number
+                Role
               </th>
               <th className="px-4 py-4 text-center text-base font-bold text-[#181919]">
                 Total Order
@@ -157,27 +103,38 @@ export default function UsersManagement() {
             </tr>
           </thead>
           <tbody>
-            {paginatedUsers.map((user, i) => (
-              <tr key={i} className="border-b border-[#e4e4e4]">
-                <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
-                  {user.name}
-                </td>
-                <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
-                  {user.email}
-                </td>
-                <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
-                  {user.phone}
-                </td>
-                <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
-                  {user.totalOrder}
-                </td>
-                <td className="px-4 py-4 text-center">
-                  <button className="rounded-full border border-[#1bb400] px-3 py-1 text-base text-[#0ca22f] transition-colors hover:bg-[#0ca22f] hover:text-white">
-                    Details
-                  </button>
+            {filteredUsers.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="px-4 py-8 text-center text-[#6b6b6b]"
+                >
+                  No users found.
                 </td>
               </tr>
-            ))}
+            ) : (
+              filteredUsers.map((user) => (
+                <tr key={user._id} className="border-b border-[#e4e4e4]">
+                  <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
+                    {user.firstName} {user.lastName}
+                  </td>
+                  <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
+                    {user.email}
+                  </td>
+                  <td className="px-4 py-4 text-center text-base capitalize text-[#3b3b3b]">
+                    {user.role}
+                  </td>
+                  <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
+                    {user.totalOrders}
+                  </td>
+                  <td className="px-4 py-4 text-center">
+                    <button className="rounded-full border border-[#1bb400] px-3 py-1 text-base text-[#0ca22f] transition-colors hover:bg-[#0ca22f] hover:text-white">
+                      Details
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
 
@@ -185,8 +142,7 @@ export default function UsersManagement() {
         <div className="flex items-center justify-between px-12 py-5">
           <p className="text-sm text-[#3b3b3b]">
             Showing {startIndex + 1} to{" "}
-            {Math.min(startIndex + ITEMS_PER_PAGE, filteredUsers.length)} of{" "}
-            {filteredUsers.length} results
+            {Math.min(startIndex + ITEMS_PER_PAGE, total)} of {total} results
           </p>
 
           <div className="flex items-center gap-2">

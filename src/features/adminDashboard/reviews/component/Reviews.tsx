@@ -12,81 +12,11 @@ import {
   ChevronRight,
   CheckCircle,
   XCircle,
+  Loader2,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useReviews } from "../hooks/useReviews";
 import { Review } from "../types/reviews.types";
-
-// --- Stat Cards ---
-
-const stats = [
-  { label: "Total Reviews", value: "1,482", icon: TrendingUp },
-  { label: "Total Reviews", value: "$4,50", icon: DollarSign },
-];
-
-// --- Mock Reviews Data ---
-
-const allReviews: Review[] = [
-  {
-    id: 1,
-    name: "Eleanor Vance",
-    avatar: "",
-    time: "2 hours ago",
-    book: "The Echoes of Eternity",
-    rating: 5,
-    text: '"The narration in this book is absolutely sublime. It feels like the characters are right in the room with you. I finished it in two sittings. Can\'t wait for the sequel!"',
-    status: "APPROVED",
-  },
-  {
-    id: 2,
-    name: "Eleanor Vance",
-    avatar: "",
-    time: "2 hours ago",
-    book: "The Echoes of Eternity",
-    rating: 5,
-    text: '"The narration in this book is absolutely sublime. It feels like the characters are right in the room with you. I finished it in two sittings. Can\'t wait for the sequel!"',
-    status: "PENDING",
-  },
-  {
-    id: 3,
-    name: "Eleanor Vance",
-    avatar: "",
-    time: "2 hours ago",
-    book: "The Echoes of Eternity",
-    rating: 5,
-    text: '"The narration in this book is absolutely sublime. It feels like the characters are right in the room with you. I finished it in two sittings. Can\'t wait for the sequel!"',
-    status: "PENDING",
-  },
-  {
-    id: 4,
-    name: "Eleanor Vance",
-    avatar: "",
-    time: "2 hours ago",
-    book: "The Echoes of Eternity",
-    rating: 5,
-    text: '"The narration in this book is absolutely sublime. It feels like the characters are right in the room with you. I finished it in two sittings. Can\'t wait for the sequel!"',
-    status: "APPROVED",
-  },
-  {
-    id: 5,
-    name: "Eleanor Vance",
-    avatar: "",
-    time: "2 hours ago",
-    book: "The Echoes of Eternity",
-    rating: 4,
-    text: '"The narration in this book is absolutely sublime. It feels like the characters are right in the room with you. I finished it in two sittings. Can\'t wait for the sequel!"',
-    status: "PENDING",
-  },
-  {
-    id: 6,
-    name: "Eleanor Vance",
-    avatar: "",
-    time: "2 hours ago",
-    book: "The Echoes of Eternity",
-    rating: 5,
-    text: '"The narration in this book is absolutely sublime. It feels like the characters are right in the room with you. I finished it in two sittings. Can\'t wait for the sequel!"',
-    status: "PENDING",
-  },
-];
 
 const ITEMS_PER_PAGE = 6;
 
@@ -107,36 +37,45 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
+function formatTimeAgo(dateStr: string): string {
+  const now = new Date();
+  const date = new Date(dateStr);
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffMins < 60) return `${diffMins} minutes ago`;
+  if (diffHours < 24) return `${diffHours} hours ago`;
+  if (diffDays < 30) return `${diffDays} days ago`;
+  return date.toLocaleDateString();
+}
+
 function ReviewCard({ review }: { review: Review }) {
+  const userName = `${review.userId.firstName} ${review.userId.lastName}`;
+
   return (
     <div className="rounded-xl border border-[#e4e4e4] bg-white p-5">
-      {/* Header: Avatar + Name + Time + Status */}
+      {/* Header: Avatar + Name + Time */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <Avatar className="size-11">
-            <AvatarImage src={review.avatar} alt={review.name} />
+            <AvatarImage src="" alt={userName} />
             <AvatarFallback className="bg-[#d4a574] text-white text-sm font-semibold">
-              {review.name
+              {userName
                 .split(" ")
                 .map((n) => n[0])
                 .join("")}
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-base font-semibold text-[#111]">{review.name}</p>
+            <p className="text-base font-semibold text-[#111]">{userName}</p>
             <div className="flex items-center gap-1 text-xs text-[#6b6b6b]">
               <Clock className="size-3" />
-              {review.time}
+              {formatTimeAgo(review.createdAt)}
             </div>
           </div>
         </div>
-        <span
-          className={`text-xs font-bold ${
-            review.status === "APPROVED" ? "text-[#0ca22f]" : "text-[#b45309]"
-          }`}
-        >
-          {review.status}
-        </span>
       </div>
 
       {/* Rating + Book */}
@@ -144,17 +83,17 @@ function ReviewCard({ review }: { review: Review }) {
         <StarRating rating={review.rating} />
         <div className="flex items-center gap-1 text-sm font-medium text-[#4f46e5]">
           <BookOpen className="size-3.5" />
-          {review.book}
+          {review.bookId.title}
         </div>
       </div>
 
       {/* Review Text */}
       <p className="mt-3 text-sm leading-relaxed text-[#3b3b3b]">
-        {review.text}
+        &ldquo;{review.comment}&rdquo;
       </p>
 
-      {/* Actions for PENDING */}
-      {review.status === "PENDING" && (
+      {/* Actions */}
+      {!review.isDeleted && (
         <div className="mt-4 flex items-center gap-4">
           <button className="flex items-center gap-1.5 rounded-md bg-[#0ca22f] px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#0a8a27]">
             <CheckCircle className="size-4" />
@@ -173,12 +112,46 @@ function ReviewCard({ review }: { review: Review }) {
 export default function Reviews() {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const totalPages = Math.ceil(allReviews.length / ITEMS_PER_PAGE);
+  const { data, isLoading, error } = useReviews(currentPage, ITEMS_PER_PAGE);
+
+  const reviews = data?.data?.data ?? [];
+  const meta = data?.data?.meta;
+  const totalPages = meta?.totalPage ?? 1;
+  const total = meta?.total ?? 0;
+
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedReviews = allReviews.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE,
-  );
+
+  const stats = [
+    { label: "Total Reviews", value: total.toLocaleString(), icon: TrendingUp },
+    {
+      label: "Average Rating",
+      value:
+        reviews.length > 0
+          ? (
+              reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+            ).toFixed(1)
+          : "0",
+      icon: DollarSign,
+    },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <Loader2 className="size-8 animate-spin text-[#4f46e5]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <p className="text-red-500">
+          Failed to load reviews. Please try again.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -223,18 +196,21 @@ export default function Reviews() {
         </div>
 
         {/* Review Cards Grid */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {paginatedReviews.map((review) => (
-            <ReviewCard key={review.id} review={review} />
-          ))}
-        </div>
+        {reviews.length === 0 ? (
+          <p className="py-8 text-center text-[#6b6b6b]">No reviews found.</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {reviews.map((review) => (
+              <ReviewCard key={review._id} review={review} />
+            ))}
+          </div>
+        )}
 
         {/* Pagination */}
         <div className="mt-8 flex items-center justify-between px-6">
           <p className="text-sm text-[#3b3b3b]">
             Showing {startIndex + 1} to{" "}
-            {Math.min(startIndex + ITEMS_PER_PAGE, allReviews.length)} of{" "}
-            {allReviews.length} results
+            {Math.min(startIndex + ITEMS_PER_PAGE, total)} of {total} results
           </p>
 
           <div className="flex items-center gap-2">
