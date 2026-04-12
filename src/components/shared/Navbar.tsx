@@ -73,7 +73,7 @@ export default function Navbar() {
           className="relative h-[50px] w-[130px] md:h-[70px] md:w-[180px] overflow-hidden"
         >
           <Image
-            src="/images/logo.svg"
+            src="/images/logo.png"
             alt="ToppersCrowd Logo"
             fill
             className="object-cover"
@@ -143,7 +143,11 @@ export default function Navbar() {
                 {dropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 rounded-lg border border-slate-200 bg-white shadow-lg">
                     <Link
-                      href="/dashboard"
+                      href={
+                        session.user.role === "admin"
+                          ? "/admin-dashboard"
+                          : "/dashboard"
+                      }
                       onClick={() => setDropdownOpen(false)}
                       className="block rounded-t-lg px-4 py-3 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-50"
                     >
@@ -228,7 +232,11 @@ export default function Navbar() {
             {session?.user ? (
               <>
                 <Link
-                  href="/dashboard"
+                  href={
+                    session.user.role === "admin"
+                      ? "/admin-dashboard"
+                      : "/dashboard"
+                  }
                   onClick={() => setMobileMenuOpen(false)}
                   className="text-sm font-medium text-slate-700"
                 >

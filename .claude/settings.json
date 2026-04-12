@@ -1,5 +1,11 @@
 {
   "permissions": {
-    "allow": ["Bash(npx eslint:*)"]
+    "allow": [
+      "Bash(npx eslint:*)",
+      "Bash(find /home/rasel/Rasel/FSD/topperscrowd-frontend/src -type f \\\\\\( -name \"*.tsx\" -o -name \"*.ts\" \\\\\\) -exec grep -l \"Dialog\\\\|AlertDialog\\\\|Confirmation\" {} \\\\;)",
+      "Bash(awk '{print $NF}')",
+      "Bash(ls -la /home/rasel/Rasel/FSD/topperscrowd-frontend/*.ts /home/rasel/Rasel/FSD/topperscrowd-frontend/*.js)",
+      "Bash(xargs ls:*)"
+    ]
   }
 }
