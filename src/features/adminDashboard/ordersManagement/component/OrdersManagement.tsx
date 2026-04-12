@@ -7,114 +7,74 @@ import {
   CheckSquare,
   Hourglass,
   Search,
-  Filter,
-  MoreVertical,
   ChevronLeft,
   ChevronRight,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Order } from "../types/ordersManagement.types";
-
-// --- Stat Cards ---
-
-const stats = [
-  { label: "Today Sales", value: "1,482", icon: TrendingUp },
-  { label: "Today Revenue", value: "$4,50", icon: DollarSign },
-  { label: "Paid Orders", value: "555", icon: CheckSquare },
-  { label: "Pending Orders", value: "555", icon: Hourglass },
-];
-
-// --- Mock Orders Data ---
-
-const allOrders: Order[] = [
-  {
-    name: "The Future of Solar Energy",
-    author: "Bogdán Norbert",
-    category: "Bogdán Norbert",
-    price: "$24.99",
-    status: "Paid",
-  },
-  {
-    name: "Advances in AI Technology",
-    author: "Maria Chen",
-    category: "Maria Chen",
-    price: "$19.99",
-    status: "Paid",
-  },
-  {
-    name: "Understanding Quantum Computing",
-    author: "Alex Rodriguez",
-    category: "Alex Rodriguez",
-    price: "$29.99",
-    status: "Pending",
-  },
-  {
-    name: "The Rise of Electric Vehicles",
-    author: "Lisa Tran",
-    category: "Lisa Tran",
-    price: "$22.50",
-    status: "Paid",
-  },
-  {
-    name: "Blockchain: Beyond Cryptocurrencies",
-    author: "John Smith",
-    category: "John Smith",
-    price: "$30.00",
-    status: "Paid",
-  },
-  {
-    name: "Sustainable Urban Development",
-    author: "Emily Davis",
-    category: "Emily Davis",
-    price: "$27.99",
-    status: "Pending",
-  },
-  {
-    name: "The Impact of Climate Change",
-    author: "David Lee",
-    category: "David Lee",
-    price: "$19.99",
-    status: "Paid",
-  },
-  {
-    name: "Innovations in Agriculture",
-    author: "Sophia Jackson",
-    category: "Sophia Jackson",
-    price: "$25.00",
-    status: "Pending",
-  },
-  {
-    name: "Exploring Renewable Resources",
-    author: "Grace Wilson",
-    category: "Grace Wilson",
-    price: "$21.75",
-    status: "Paid",
-  },
-];
+import { useOrders } from "../hooks/useOrdersManagement";
+import type { Order, OrdersParams } from "../types/ordersManagement.types";
 
 const ITEMS_PER_PAGE = 10;
 
-const statusStyles = {
-  Paid: "bg-[rgba(19,236,91,0.2)] text-[#004242]",
-  Pending: "bg-[#fef3c7] text-[#b45309]",
+const statusStyles: Record<string, string> = {
+  paid: "bg-[rgba(19,236,91,0.2)] text-[#004242]",
+  pending: "bg-[#fef3c7] text-[#b45309]",
+  cancelled: "bg-[#fee2e2] text-[#dc2626]",
 };
 
 export default function OrdersManagement() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [statusFilter, setStatusFilter] =
+    useState<OrdersParams["paymentStatus"]>("all");
 
-  const filteredOrders = allOrders.filter(
-    (order) =>
-      order.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.author.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const { data, isLoading } = useOrders({
+    page: currentPage,
+    limit: ITEMS_PER_PAGE,
+    search: searchQuery || undefined,
+    paymentStatus: statusFilter,
+    sort: "descending",
+  });
 
-  const totalPages = Math.ceil(filteredOrders.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedOrders = filteredOrders.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE,
-  );
+  const orders = data?.data || [];
+  const meta = data?.meta;
+  const totalPages = meta?.totalPage || 1;
+
+  // Compute stats from meta
+  const totalOrders = meta?.total || 0;
+  const paidCount = orders.filter((o) => o.paymentStatus === "paid").length;
+  const pendingCount = orders.filter(
+    (o) => o.paymentStatus === "pending",
+  ).length;
+  const totalRevenue = orders
+    .filter((o) => o.paymentStatus === "paid")
+    .reduce((sum, o) => sum + o.totalAmount, 0);
+
+  const stats = [
+    { label: "Total Orders", value: String(totalOrders), icon: TrendingUp },
+    {
+      label: "Page Revenue",
+      value: `$${totalRevenue.toFixed(2)}`,
+      icon: DollarSign,
+    },
+    { label: "Paid (this page)", value: String(paidCount), icon: CheckSquare },
+    {
+      label: "Pending (this page)",
+      value: String(pendingCount),
+      icon: Hourglass,
+    },
+  ];
+
+  const handleSearch = () => {
+    setSearchQuery(searchInput);
+    setCurrentPage(1);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleSearch();
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -131,7 +91,11 @@ export default function OrdersManagement() {
             <div>
               <p className="text-sm text-[#5f7d7d]">{stat.label}</p>
               <p className="mt-1 text-2xl font-bold text-[#0f172a]">
-                {stat.value}
+                {isLoading ? (
+                  <Loader2 className="h-6 w-6 animate-spin text-slate-400" />
+                ) : (
+                  stat.value
+                )}
               </p>
             </div>
           </div>
@@ -153,151 +117,189 @@ export default function OrdersManagement() {
             </div>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-4">
             {/* Search */}
-            <div className="flex h-[52px] w-[400px]">
+            <div className="flex h-[52px] w-full sm:w-[400px]">
               <input
                 type="text"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1);
-                }}
+                placeholder="Search by transaction ID..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={handleKeyDown}
                 className="flex-1 rounded-l-lg border border-[#727272] px-4 text-base text-[#3b3b3b] placeholder:text-[#6c6c6c] focus:border-[#4f46e5] focus:outline-none"
               />
-              <button className="flex w-[60px] items-center justify-center rounded-r-lg bg-[#4f46e5]">
+              <button
+                onClick={handleSearch}
+                className="flex w-[60px] items-center justify-center rounded-r-lg bg-[#4f46e5]"
+              >
                 <Search className="size-5 text-white" />
               </button>
             </div>
 
-            {/* Filter Button */}
-            <button className="flex h-[52px] items-center gap-2 rounded-lg border-2 border-[#4f46e5] px-4 text-base font-bold text-[#4f46e5] transition-colors hover:bg-[#4f46e5] hover:text-white">
-              <Filter className="size-5" />
-              Filter
-            </button>
+            {/* Status Filter */}
+            <div className="flex gap-2">
+              {(["all", "paid", "pending", "cancelled"] as const).map(
+                (status) => (
+                  <button
+                    key={status}
+                    onClick={() => {
+                      setStatusFilter(status);
+                      setCurrentPage(1);
+                    }}
+                    className={cn(
+                      "rounded-lg px-4 py-2.5 text-sm font-medium capitalize transition-colors",
+                      statusFilter === status
+                        ? "bg-[#4f46e5] text-white"
+                        : "border border-[#4f46e5] text-[#4f46e5] hover:bg-[#4f46e5]/5",
+                    )}
+                  >
+                    {status}
+                  </button>
+                ),
+              )}
+            </div>
           </div>
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto rounded-lg">
-          <table className="w-full">
-            <thead>
-              <tr className="border border-[#e4e4e4] bg-white">
-                <th className="px-4 py-4 text-left text-base font-bold text-black">
-                  Audio Book Name
-                </th>
-                <th className="px-4 py-4 text-center text-base font-bold text-black">
-                  Author / Narrator
-                </th>
-                <th className="px-4 py-4 text-center text-base font-bold text-black">
-                  Category
-                </th>
-                <th className="px-4 py-4 text-center text-base font-bold text-black">
-                  Price
-                </th>
-                <th className="px-4 py-4 text-center text-base font-bold text-black">
-                  Status
-                </th>
-                <th className="px-4 py-4 text-center text-base font-bold text-black">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedOrders.map((order, i) => (
-                <tr key={i} className="border border-[#e4e4e4] bg-white">
-                  <td className="max-w-[200px] truncate px-4 py-4 text-left text-lg text-[#0f172a]">
-                    {order.name}
-                  </td>
-                  <td className="px-4 py-4 text-center text-xs font-medium text-black">
-                    {order.author}
-                  </td>
-                  <td className="px-4 py-4 text-center text-xs font-medium text-black">
-                    {order.category}
-                  </td>
-                  <td className="px-4 py-4 text-center text-base text-[#111]">
-                    {order.price}
-                  </td>
-                  <td className="px-4 py-4 text-center">
-                    <span
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-[#4f46e5]" />
+          </div>
+        ) : orders.length === 0 ? (
+          <div className="py-20 text-center text-[#6c6c6c]">
+            No orders found.
+          </div>
+        ) : (
+          <div className="overflow-x-auto rounded-lg">
+            <table className="w-full">
+              <thead>
+                <tr className="border border-[#e4e4e4] bg-white">
+                  <th className="px-4 py-4 text-left text-base font-bold text-black">
+                    Order ID
+                  </th>
+                  <th className="px-4 py-4 text-left text-base font-bold text-black">
+                    Customer
+                  </th>
+                  <th className="px-4 py-4 text-left text-base font-bold text-black">
+                    Items
+                  </th>
+                  <th className="px-4 py-4 text-center text-base font-bold text-black">
+                    Total
+                  </th>
+                  <th className="px-4 py-4 text-center text-base font-bold text-black">
+                    Status
+                  </th>
+                  <th className="px-4 py-4 text-center text-base font-bold text-black">
+                    Date
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order: Order) => (
+                  <tr key={order._id} className="border border-[#e4e4e4]">
+                    <td className="px-4 py-4 text-sm font-medium text-[#0f172a]">
+                      #{order._id.slice(-8).toUpperCase()}
+                    </td>
+                    <td className="px-4 py-4">
+                      <p className="text-sm text-[#0f172a]">
+                        {order.userId.email}
+                      </p>
+                      <p className="text-xs capitalize text-[#6c6c6c]">
+                        {order.userId.role}
+                      </p>
+                    </td>
+                    <td className="max-w-[250px] px-4 py-4">
+                      {order.items.map((item, idx) => (
+                        <div key={idx} className="text-sm text-[#0f172a]">
+                          {item.book.title}{" "}
+                          <span className="text-xs text-[#6c6c6c]">
+                            x{item.quantity}
+                          </span>
+                        </div>
+                      ))}
+                    </td>
+                    <td className="px-4 py-4 text-center text-base font-medium text-[#111]">
+                      ${order.totalAmount.toFixed(2)}
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <span
+                        className={cn(
+                          "inline-block rounded-full px-3 py-1 text-xs font-bold capitalize",
+                          statusStyles[order.paymentStatus],
+                        )}
+                      >
+                        {order.paymentStatus}
+                      </span>
+                    </td>
+                    <td className="px-4 py-4 text-center text-sm text-[#3b3b3b]">
+                      {new Date(order.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Pagination */}
+            <div className="flex items-center justify-between px-4 py-5 sm:px-12">
+              <p className="text-sm text-[#3b3b3b]">
+                Page {meta?.page || 1} of {totalPages} ({meta?.total || 0}{" "}
+                results)
+              </p>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="flex size-10 items-center justify-center rounded border border-[#64748b] bg-white disabled:opacity-40"
+                >
+                  <ChevronLeft className="size-[18px]" />
+                </button>
+
+                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                  let pageNum: number;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setCurrentPage(pageNum)}
                       className={cn(
-                        "inline-block rounded-full px-3 py-1 text-xs font-bold",
-                        statusStyles[order.status],
+                        "flex size-10 items-center justify-center rounded text-base font-medium",
+                        currentPage === pageNum
+                          ? "bg-[#4f46e5] text-white"
+                          : "border border-[#0f172a] text-[#0f172a]",
                       )}
                     >
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4 text-center">
-                    <button className="rounded-full p-2 transition-colors hover:bg-gray-100">
-                      <MoreVertical className="size-5 text-[#3b3b3b]" />
+                      {pageNum}
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  );
+                })}
 
-          {/* Pagination */}
-          <div className="flex items-center justify-between px-12 py-5">
-            <p className="text-sm text-[#3b3b3b]">
-              Showing {startIndex + 1} to{" "}
-              {Math.min(startIndex + ITEMS_PER_PAGE, filteredOrders.length)} of{" "}
-              {filteredOrders.length} results
-            </p>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="flex size-10 items-center justify-center rounded border border-[#64748b] bg-white disabled:opacity-40"
-              >
-                <ChevronLeft className="size-[18px]" />
-              </button>
-
-              <button
-                onClick={() => setCurrentPage(1)}
-                className={`flex size-10 items-center justify-center rounded text-base font-medium ${
-                  currentPage === 1
-                    ? "bg-[#4f46e5] text-white"
-                    : "border border-[#0f172a] text-[#0f172a]"
-                }`}
-              >
-                1
-              </button>
-
-              {totalPages > 2 && (
-                <span className="flex size-10 items-center justify-center rounded border border-[#0f172a] text-base font-medium text-[#0f172a]">
-                  ...
-                </span>
-              )}
-
-              {totalPages > 1 && (
                 <button
-                  onClick={() => setCurrentPage(totalPages)}
-                  className={`flex size-10 items-center justify-center rounded text-base font-medium ${
-                    currentPage === totalPages
-                      ? "bg-[#4f46e5] text-white"
-                      : "border border-[#0f172a] text-[#1e1e1e]"
-                  }`}
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="flex size-10 items-center justify-center rounded border border-[#0f172a] disabled:opacity-40"
                 >
-                  {totalPages}
+                  <ChevronRight className="size-[18px]" />
                 </button>
-              )}
-
-              <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages, p + 1))
-                }
-                disabled={currentPage === totalPages}
-                className="flex size-10 items-center justify-center rounded border border-[#0f172a] disabled:opacity-40"
-              >
-                <ChevronRight className="size-[18px]" />
-              </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
