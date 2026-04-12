@@ -234,7 +234,7 @@ function ReviewCard({ review }: { review: Review }) {
             <Eye className="size-4" />
             Details
           </button>
-          {!review.isDeleted && (
+          {/* {!review.isDeleted && (
             <>
               <button className="flex items-center gap-1.5 rounded-md bg-[#0ca22f] px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#0a8a27]">
                 <CheckCircle className="size-4" />
@@ -245,7 +245,7 @@ function ReviewCard({ review }: { review: Review }) {
                 Reject
               </button>
             </>
-          )}
+          )} */}
         </div>
       </div>
 
