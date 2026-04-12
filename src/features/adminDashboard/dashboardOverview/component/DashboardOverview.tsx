@@ -6,63 +6,10 @@ import {
   Star,
   DollarSign,
   ChevronDown,
+  Loader2,
 } from "lucide-react";
-// import { useDashboardOverview } from "../hooks/useDashboardOverview";
-
-// --- Stat Cards ---
-
-const stats = [
-  {
-    label: "Total Customers",
-    value: "1,482",
-    icon: Users,
-  },
-  {
-    label: "Total Orders",
-    value: "150",
-    icon: ShoppingBag,
-  },
-  {
-    label: "Reviews",
-    value: "555",
-    icon: Star,
-  },
-  {
-    label: "Revenue",
-    value: "$42,500",
-    icon: DollarSign,
-  },
-];
-
-// --- Recent Orders Data ---
-
-const recentOrders = [
-  {
-    customer: "Paris dimension",
-    email: "example@gmail.com",
-    amount: "$200",
-  },
-  {
-    customer: "Paris dimension",
-    email: "example@gmail.com",
-    amount: "$200",
-  },
-  {
-    customer: "Paris dimension",
-    email: "example@gmail.com",
-    amount: "$200",
-  },
-  {
-    customer: "Paris dimension",
-    email: "example@gmail.com",
-    amount: "$200",
-  },
-  {
-    customer: "Paris dimension",
-    email: "example@gmail.com",
-    amount: "$200",
-  },
-];
+import { useDashboardOverview } from "../hooks/useDashboardOverview";
+import { RecentOrder } from "../types/dashboardOverview.types";
 
 // --- Chart Data (months + values for the area chart) ---
 
@@ -188,9 +135,57 @@ function OrderChart() {
   );
 }
 
+function formatCurrency(amount: number): string {
+  return `$${amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
 export default function AdminDashboard() {
-  // const { data, isLoading, error } = useDashboardOverview();
-  // console.log(data)
+  const { data, isLoading, error } = useDashboardOverview();
+
+  const stats = data?.data
+    ? [
+        {
+          label: "Total Customers",
+          value: data.data.stats.totalUsers.toLocaleString(),
+          icon: Users,
+        },
+        {
+          label: "Total Orders",
+          value: data.data.stats.totalOrders.toLocaleString(),
+          icon: ShoppingBag,
+        },
+        {
+          label: "Reviews",
+          value: data.data.stats.totalReviews.toLocaleString(),
+          icon: Star,
+        },
+        {
+          label: "Revenue",
+          value: formatCurrency(data.data.stats.totalRevenue),
+          icon: DollarSign,
+        },
+      ]
+    : [];
+
+  const recentOrders: RecentOrder[] = data?.data?.recentOrders ?? [];
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <Loader2 className="size-8 animate-spin text-[#4f46e5]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <p className="text-red-500">
+          Failed to load dashboard data. Please try again.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -240,24 +235,35 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {recentOrders.map((order, i) => (
-                <tr key={i} className="border-b border-[#e4e4e4]">
-                  <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
-                    {order.customer}
-                  </td>
-                  <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
-                    {order.email}
-                  </td>
-                  <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
-                    {order.amount}
-                  </td>
-                  <td className="px-4 py-4 text-center">
-                    <button className="rounded-full border border-[#1bb400] px-3 py-1 text-base text-[#0ca22f] transition-colors hover:bg-[#0ca22f] hover:text-white">
-                      Details
-                    </button>
+              {recentOrders.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="px-4 py-8 text-center text-[#6b6b6b]"
+                  >
+                    No recent orders found.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                recentOrders.map((order) => (
+                  <tr key={order._id} className="border-b border-[#e4e4e4]">
+                    <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
+                      {order.userId.firstName} {order.userId.lastName}
+                    </td>
+                    <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
+                      {order.userId.email}
+                    </td>
+                    <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
+                      {formatCurrency(order.totalAmount)}
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <button className="rounded-full border border-[#1bb400] px-3 py-1 text-base text-[#0ca22f] transition-colors hover:bg-[#0ca22f] hover:text-white">
+                        Details
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
