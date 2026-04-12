@@ -13,8 +13,18 @@ import {
   CheckCircle,
   XCircle,
   Loader2,
+  Eye,
+  Mail,
+  Calendar,
+  MessageSquare,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useReviews } from "../hooks/useReviews";
 import { Review } from "../types/reviews.types";
 
@@ -51,61 +61,200 @@ function formatTimeAgo(dateStr: string): string {
   return date.toLocaleDateString();
 }
 
+function ReviewDetailModal({
+  review,
+  open,
+  onOpenChange,
+}: {
+  review: Review;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const userName = `${review.userId.firstName} ${review.userId.lastName}`;
+  const initials = userName
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-xl">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-bold text-[#181919]">
+            Review Details
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="mt-2 space-y-5">
+          {/* Reviewer Info */}
+          <div className="flex items-center gap-3">
+            <Avatar className="size-12">
+              <AvatarImage src="" alt={userName} />
+              <AvatarFallback className="bg-[#d4a574] text-sm font-semibold text-white">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="text-base font-semibold text-[#111]">{userName}</p>
+              <div className="flex items-center gap-1 text-sm text-[#6b6b6b]">
+                <Mail className="size-3.5" />
+                {review.userId.email}
+              </div>
+            </div>
+          </div>
+
+          <hr className="border-[#e4e4e4]" />
+
+          {/* Book */}
+          <div className="flex items-center gap-2">
+            <BookOpen className="size-4 text-[#4f46e5]" />
+            <span className="text-sm font-medium text-[#6b6b6b]">Book:</span>
+            <span className="text-sm font-semibold text-[#111]">
+              {review.bookId.title}
+            </span>
+          </div>
+
+          {/* Rating */}
+          <div className="flex items-center gap-2">
+            <Star className="size-4 text-[#f59e0b]" />
+            <span className="text-sm font-medium text-[#6b6b6b]">Rating:</span>
+            <StarRating rating={review.rating} />
+            <span className="text-sm font-semibold text-[#111]">
+              {review.rating}/5
+            </span>
+          </div>
+
+          {/* Comment */}
+          <div>
+            <div className="mb-2 flex items-center gap-2">
+              <MessageSquare className="size-4 text-[#4f46e5]" />
+              <span className="text-sm font-medium text-[#6b6b6b]">
+                Comment:
+              </span>
+            </div>
+            <p className="rounded-lg bg-[#f8f8f8] p-4 text-sm leading-relaxed text-[#3b3b3b]">
+              &ldquo;{review.comment}&rdquo;
+            </p>
+          </div>
+
+          {/* Dates */}
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            <div className="flex items-center gap-2">
+              <Calendar className="size-4 text-[#6b6b6b]" />
+              <span className="text-sm text-[#6b6b6b]">Created:</span>
+              <span className="text-sm font-medium text-[#111]">
+                {new Date(review.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Calendar className="size-4 text-[#6b6b6b]" />
+              <span className="text-sm text-[#6b6b6b]">Updated:</span>
+              <span className="text-sm font-medium text-[#111]">
+                {new Date(review.updatedAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
+            </div>
+          </div>
+
+          {/* Status */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-[#6b6b6b]">Status:</span>
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                review.isDeleted
+                  ? "bg-red-100 text-[#e53838]"
+                  : "bg-green-100 text-[#0ca22f]"
+              }`}
+            >
+              {review.isDeleted ? "Deleted" : "Active"}
+            </span>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function ReviewCard({ review }: { review: Review }) {
+  const [showDetail, setShowDetail] = useState(false);
   const userName = `${review.userId.firstName} ${review.userId.lastName}`;
 
   return (
-    <div className="rounded-xl border border-[#e4e4e4] bg-white p-5">
-      {/* Header: Avatar + Name + Time */}
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <Avatar className="size-11">
-            <AvatarImage src="" alt={userName} />
-            <AvatarFallback className="bg-[#d4a574] text-white text-sm font-semibold">
-              {userName
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="text-base font-semibold text-[#111]">{userName}</p>
-            <div className="flex items-center gap-1 text-xs text-[#6b6b6b]">
-              <Clock className="size-3" />
-              {formatTimeAgo(review.createdAt)}
+    <>
+      <div className="rounded-xl border border-[#e4e4e4] bg-white p-5">
+        {/* Header: Avatar + Name + Time */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <Avatar className="size-11">
+              <AvatarImage src="" alt={userName} />
+              <AvatarFallback className="bg-[#d4a574] text-sm font-semibold text-white">
+                {userName
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="text-base font-semibold text-[#111]">{userName}</p>
+              <div className="flex items-center gap-1 text-xs text-[#6b6b6b]">
+                <Clock className="size-3" />
+                {formatTimeAgo(review.createdAt)}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Rating + Book */}
-      <div className="mt-3 flex items-center gap-3">
-        <StarRating rating={review.rating} />
-        <div className="flex items-center gap-1 text-sm font-medium text-[#4f46e5]">
-          <BookOpen className="size-3.5" />
-          {review.bookId.title}
+        {/* Rating + Book */}
+        <div className="mt-3 flex items-center gap-3">
+          <StarRating rating={review.rating} />
+          <div className="flex items-center gap-1 text-sm font-medium text-[#4f46e5]">
+            <BookOpen className="size-3.5" />
+            {review.bookId.title}
+          </div>
         </div>
-      </div>
 
-      {/* Review Text */}
-      <p className="mt-3 text-sm leading-relaxed text-[#3b3b3b]">
-        &ldquo;{review.comment}&rdquo;
-      </p>
+        {/* Review Text */}
+        <p className="mt-3 text-sm leading-relaxed text-[#3b3b3b]">
+          &ldquo;{review.comment}&rdquo;
+        </p>
 
-      {/* Actions */}
-      {!review.isDeleted && (
+        {/* Actions */}
         <div className="mt-4 flex items-center gap-4">
-          <button className="flex items-center gap-1.5 rounded-md bg-[#0ca22f] px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#0a8a27]">
-            <CheckCircle className="size-4" />
-            Approve
+          <button
+            onClick={() => setShowDetail(true)}
+            className="flex items-center gap-1.5 rounded-md border border-[#4f46e5] px-5 py-2 text-sm font-medium text-[#4f46e5] transition-colors hover:bg-[#4f46e5] hover:text-white"
+          >
+            <Eye className="size-4" />
+            Details
           </button>
-          <button className="flex items-center gap-1 text-sm font-medium text-[#e53838] transition-colors hover:text-[#c72f2f]">
-            <XCircle className="size-4" />
-            Reject
-          </button>
+          {!review.isDeleted && (
+            <>
+              <button className="flex items-center gap-1.5 rounded-md bg-[#0ca22f] px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#0a8a27]">
+                <CheckCircle className="size-4" />
+                Approve
+              </button>
+              <button className="flex items-center gap-1 text-sm font-medium text-[#e53838] transition-colors hover:text-[#c72f2f]">
+                <XCircle className="size-4" />
+                Reject
+              </button>
+            </>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+
+      <ReviewDetailModal
+        review={review}
+        open={showDetail}
+        onOpenChange={setShowDetail}
+      />
+    </>
   );
 }
 

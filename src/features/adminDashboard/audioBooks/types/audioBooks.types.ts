@@ -50,5 +50,6 @@ export interface AudioBooksResponse {
   success: boolean;
   message: string;
   statusCode: number;
-  data: AudioBooksData;
+  data: AudioBook[];
+  meta: AudioBooksMeta;
 }
