@@ -29,6 +29,12 @@ export interface LibraryBook {
   audio?: BookAudio;
   averageRating: number;
   totalReviews: number;
+  myRating?: number;
+  myReview?: {
+    _id: string;
+    rating: number;
+    comment: string;
+  };
   saleCount: number;
   reviews: string[];
   createdAt: string;
@@ -63,5 +69,11 @@ export interface PaginatedResponse<T> {
     limit: number;
     total: number;
     totalPages: number;
+  };
+  meta?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPage: number;
   };
 }

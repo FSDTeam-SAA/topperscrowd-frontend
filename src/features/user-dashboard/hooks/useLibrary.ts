@@ -27,9 +27,13 @@ export function useRecentPurchases() {
   });
 }
 
-export function useMyBooks(page: number = 1, limit: number = 10) {
+export function useMyBooks(
+  page: number = 1,
+  limit: number = 10,
+  search?: string,
+) {
   return useQuery({
-    queryKey: ["myBooks", page, limit],
-    queryFn: () => fetchMyBooks(page, limit),
+    queryKey: ["myBooks", page, limit, search],
+    queryFn: () => fetchMyBooks(page, limit, search),
   });
 }

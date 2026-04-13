@@ -33,9 +33,15 @@ export async function fetchRecentPurchases(): Promise<
 export async function fetchMyBooks(
   page: number = 1,
   limit: number = 10,
+  search?: string,
 ): Promise<PaginatedResponse<LibraryBook>> {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+  });
+  if (search) params.append("search", search);
   const { data } = await api.get<PaginatedResponse<LibraryBook>>(
-    `/library/my-books?page=${page}&limit=${limit}`,
+    `/library/my-books?${params.toString()}`,
   );
   return data;
 }
