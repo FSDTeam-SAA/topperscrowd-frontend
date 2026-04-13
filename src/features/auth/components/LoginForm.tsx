@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AuthInput, AuthButton, AuthCheckbox } from "./AuthFormComponents";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { toast } from "sonner";
 
 export default function LoginForm() {
@@ -35,7 +35,14 @@ export default function LoginForm() {
       }
 
       toast.success("Logged in successfully");
-      router.push("/");
+
+      // Redirect based on user role
+      const session = await getSession();
+      if (session?.user?.role === "admin") {
+        router.push("/admin-dashboard");
+      } else {
+        router.push("/dashboard");
+      }
       router.refresh();
     } catch {
       toast.error("Login failed. Please try again.");

@@ -10,8 +10,6 @@ import {
   Clock,
   ChevronLeft,
   ChevronRight,
-  CheckCircle,
-  XCircle,
   Loader2,
   Eye,
   Mail,

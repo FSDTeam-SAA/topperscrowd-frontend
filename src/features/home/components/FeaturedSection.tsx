@@ -7,7 +7,7 @@ interface FeaturedSectionProps {
 
 export default function FeaturedSection({ books }: FeaturedSectionProps) {
   return (
-    <div className="mx-auto pt-16 pb-20 mx-auto container">
+    <div className="pt-16 pb-20 mx-auto container">
       <BookGrid
         title="Featured Audiobooks"
         subtitle="Handpicked selections from our premium collection"
