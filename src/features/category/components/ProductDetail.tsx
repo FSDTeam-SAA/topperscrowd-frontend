@@ -37,7 +37,8 @@ export default function ProductDetail({
         window.location.href = res.data.checkoutUrl;
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Checkout failed");
+      // toast.error(err instanceof Error ? err.message : "Checkout failed");
+      toast.error("You have already purchased one or more of these books");
     } finally {
       setBuyingNow(false);
     }
