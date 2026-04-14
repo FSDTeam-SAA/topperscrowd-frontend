@@ -44,24 +44,32 @@ export default function FlashSaleSection({
       </div>
 
       {/* Right — Two book covers */}
-      <div className="relative flex-1 h-[220px] md:h-[292px] w-full max-w-[540px]">
-        <div className="absolute left-0 top-1.5 h-[180px] w-[180px] md:h-[260px] md:w-[260px] overflow-hidden rounded shadow-xl">
+      {/* Right — Two book covers */}
+      <div className="flex flex-2 items-end justify-center gap-3 sm:gap-4 md:gap-6 w-full max-w-[540px]">
+        {/* Book 1 */}
+        <div className="relative w-[45%] aspect-[3/4] sm:h-[180px] sm:w-[180px] md:h-[260px] md:w-[260px] shrink-0 overflow-hidden rounded-xl shadow-xl">
           <Image
             src="/images/home/sale-book1.png"
             alt="Sale book"
             fill
             className="object-cover"
+            sizes="(max-width: 640px) 45vw, 180px"
           />
         </div>
-        <div className="absolute right-[10%] md:right-0 top-8 h-[180px] w-[180px] md:h-[260px] md:w-[260px] overflow-hidden rounded shadow-xl">
+
+        {/* Book 2 */}
+        <div className="relative w-[45%] aspect-[3/4] sm:h-[180px] sm:w-[180px] md:h-[260px] md:w-[260px] shrink-0 overflow-hidden rounded-xl shadow-xl">
           <Image
             src="/images/home/sale-book2.png"
             alt="Sale book"
             fill
             className="object-cover"
+            sizes="(max-width: 640px) 45vw, 180px"
           />
-          <div className="absolute right-0 top-0 -translate-y-2 rounded-xl bg-red-700 px-4 py-2">
-            <span className="text-sm font-semibold text-white">
+
+          {/* Badge */}
+          <div className="absolute right-1 top-1 rounded-md bg-red-700 px-2 py-1 sm:right-2 sm:top-2 sm:px-3 sm:py-1.5 md:px-4 md:py-2">
+            <span className="text-[10px] font-semibold text-white sm:text-xs md:text-sm">
               FLASH SALE - 50% OFF
             </span>
           </div>
