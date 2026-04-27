@@ -40,7 +40,7 @@ export default function Footer() {
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-500 pt-4">
           <span className="text-xs text-slate-900">
-            &copy; 2026 Ka Thorian. All rights reserved.
+            &copy; 2027 Ka Thorian. All rights reserved.
           </span>
           <div className="flex gap-5 text-xs text-slate-900">
             {socialLinks.map((link) => (
