@@ -17,10 +17,13 @@ export default function HeroSection() {
             like currency. A cinematic audio experience narrated by Julian Vane.
           </p>
           <div className="flex gap-3">
-            <Button className="bg-indigo-600 hover:bg-indigo-700 rounded px-6 py-3 text-sm text-[#fff8f5]">
-              Start Listening
-            </Button>
-            <Link href="/category" className="block w-full h-full">
+            <Link href="/dashboard" className="block  h-full">
+              <Button className="bg-indigo-600 hover:bg-indigo-700 rounded px-6 py-3 text-sm text-[#fff8f5]">
+                Start Listening
+              </Button>
+            </Link>
+
+            <Link href="/category" className="block h-full">
               <Button
                 variant="outline"
                 className="border-indigo-600 text-indigo-600 hover:bg-indigo-50 rounded px-6 py-3 text-sm"

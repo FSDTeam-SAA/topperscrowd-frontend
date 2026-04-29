@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import type { CountdownUnit } from "../types";
+import Link from "next/link";
 
 interface FlashSaleSectionProps {
   countdownUnits: CountdownUnit[];
@@ -38,9 +39,12 @@ export default function FlashSaleSection({
             </div>
           ))}
         </div>
-        <Button className="w-fit bg-indigo-600 hover:bg-indigo-700 rounded-lg px-8 py-4 text-base font-semibold text-[#fff8f5]">
-          Shop the Sale
-        </Button>
+
+        <Link href="/category">
+          <Button className="w-fit bg-indigo-600 hover:bg-indigo-700 rounded-lg px-8 py-4 text-base font-semibold text-[#fff8f5]">
+            Shop the Sale
+          </Button>
+        </Link>
       </div>
 
       {/* Right — Two book covers */}

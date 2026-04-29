@@ -11,24 +11,17 @@ import HistoryTab from "@/features/user-dashboard/components/HistoryTab";
 import ReviewsTab from "@/features/user-dashboard/components/ReviewsTab";
 import SettingsTab from "@/features/user-dashboard/components/SettingsTab";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("library");
 
   const renderContent = () => {
     switch (activeTab) {
-      // case "overview":
-      //   return <DashboardOverview />;
       case "library":
         return <MyLibraryTab />;
-      // case "profile":
-      //   return <ProfileTab />;
       case "reviews":
         return <ReviewsTab />;
-      // case "orders":
-      //   return <OrdersTab />;
-      // case "wishlist":
-      //   return <WishlistTab />;
       case "history":
         return <HistoryTab />;
       case "settings":
@@ -40,15 +33,17 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 ml-4 ">
-        <Image
-          src="/images/logo.png"
-          alt="BookVerse Logo"
-          width={170}
-          height={170}
-          className="mr-2"
-        />
+      {/* Back to Home */}
+      <div className="bg-white border-b border-gray-200 px-4 py-2">
+        <Link href="/" className="text-blue-600 hover:underline">
+          <Image
+            src="/images/logo.png"
+            alt="BookVerse Logo"
+            width={170}
+            height={170}
+            className="mr-2 cursor-pointer hover:opacity-80 transition"
+          />
+        </Link>
       </div>
 
       {/* Main Layout */}
