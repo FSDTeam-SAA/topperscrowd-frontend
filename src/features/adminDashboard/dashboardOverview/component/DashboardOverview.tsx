@@ -251,7 +251,7 @@ export default function AdminDashboard() {
                       {order.userId.firstName} {order.userId.lastName}
                     </td>
                     <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
-                      {order.userId.email}
+                      {order.userId.email || "[EMAIL_ADDRESS]"}
                     </td>
                     <td className="px-4 py-4 text-center text-base text-[#3b3b3b]">
                       {formatCurrency(order.totalAmount)}

@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function SpecialOfferBanner() {
   return (
@@ -18,9 +19,11 @@ export default function SpecialOfferBanner() {
             </p>
           </div>
         </div>
-        <Button className="bg-indigo-600 hover:bg-indigo-700 rounded-md px-6 py-3 text-sm font-semibold text-white">
-          Claim Offer Now
-        </Button>
+        <Link href="/category">
+          <Button className="bg-indigo-600 hover:bg-indigo-700 rounded-md px-6 py-3 text-sm font-semibold text-white">
+            Claim Offer Now
+          </Button>
+        </Link>
       </div>
     </div>
   );
