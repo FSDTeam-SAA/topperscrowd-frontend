@@ -10,10 +10,22 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
+  Hash,
+  Calendar,
+  User,
+  Package,
+  CreditCard,
+  Clock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useOrders } from "../hooks/useOrdersManagement";
 import type { Order, OrdersParams } from "../types/ordersManagement.types";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -23,12 +35,172 @@ const statusStyles: Record<string, string> = {
   cancelled: "bg-[#fee2e2] text-[#dc2626]",
 };
 
+function formatCurrency(amount: number): string {
+  return `$${amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function OrderDetailModal({
+  order,
+  open,
+  onOpenChange,
+}: {
+  order: Order;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl overflow-hidden p-0 sm:rounded-2xl">
+        <DialogHeader className="border-b border-[#f0f0f0] bg-gray-50/50 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-xl font-bold text-[#111]">
+              Order Details
+            </DialogTitle>
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-bold capitalize ${
+                order.paymentStatus === "paid"
+                  ? "bg-green-100 text-[#0ca22f]"
+                  : order.paymentStatus === "pending"
+                    ? "bg-amber-100 text-[#b45309]"
+                    : "bg-red-100 text-[#dc2626]"
+              }`}
+            >
+              {order.paymentStatus}
+            </span>
+          </div>
+        </DialogHeader>
+
+        <div className="max-h-[80vh] overflow-y-auto px-6 py-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {/* Left Column: Customer & Order Info */}
+            <div className="space-y-6">
+              {/* Order Info */}
+              <div className="rounded-xl border border-[#e6e6e6] bg-white p-4">
+                <h4 className="mb-4 flex items-center gap-2 text-sm font-bold text-[#6b6b6b] uppercase tracking-wider">
+                  <Hash className="size-4" /> Order Info
+                </h4>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-[#6b6b6b]">Order ID</span>
+                    <span className="text-sm font-mono font-medium text-[#111]">
+                      #{order._id.slice(-8).toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-[#6b6b6b]">Date</span>
+                    <span className="flex items-center gap-1.5 text-sm font-medium text-[#111]">
+                      <Calendar className="size-3.5 text-[#6b6b6b]" />
+                      {new Date(order.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-[#6b6b6b]">
+                      Transaction ID
+                    </span>
+                    <span className="text-sm font-medium text-[#111] truncate max-w-[120px]">
+                      {order.transactionId || "N/A"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Customer Info */}
+              <div className="rounded-xl border border-[#e6e6e6] bg-white p-4">
+                <h4 className="mb-4 flex items-center gap-2 text-sm font-bold text-[#6b6b6b] uppercase tracking-wider">
+                  <User className="size-4" /> Customer Details
+                </h4>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex size-10 items-center justify-center rounded-full bg-[#4f46e5] text-sm font-bold text-white">
+                    {order.userId.email[0].toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="text-base font-bold text-[#111] truncate max-w-[180px]">
+                      {order.userId.email}
+                    </p>
+                    <p className="text-sm capitalize text-[#6b6b6b]">
+                      {order.userId.role}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Order Summary */}
+            <div className="space-y-6">
+              <div className="rounded-xl border border-[#e6e6e6] bg-white p-4">
+                <h4 className="mb-4 flex items-center gap-2 text-sm font-bold text-[#6b6b6b] uppercase tracking-wider">
+                  <Package className="size-4" /> Order Summary
+                </h4>
+                <div className="space-y-4">
+                  {order.items.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start justify-between gap-4 border-b border-[#f0f0f0] pb-3 last:border-0 last:pb-0"
+                    >
+                      <div className="flex-1">
+                        <p className="text-sm font-bold text-[#111] line-clamp-2">
+                          {item.book?.title || "Unknown Book"}
+                        </p>
+                        <p className="text-xs text-[#6b6b6b]">
+                          Qty: {item.quantity} × {formatCurrency(item.price)}
+                        </p>
+                      </div>
+                      <p className="text-sm font-bold text-[#111]">
+                        {formatCurrency(item.price * item.quantity)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 space-y-2 border-t border-[#e6e6e6] pt-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-[#6b6b6b]">Subtotal</span>
+                    <span className="text-sm font-medium text-[#111]">
+                      {formatCurrency(order.totalAmount)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-t border-[#f0f0f0] pt-2">
+                    <span className="text-base font-bold text-[#111]">
+                      Total
+                    </span>
+                    <span className="text-lg font-bold text-[#4f46e5]">
+                      {formatCurrency(order.totalAmount)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-[#e6e6e6] bg-[#fcfcfc] p-4">
+                <div className="flex items-center gap-2 text-sm text-[#6b6b6b]">
+                  <CreditCard className="size-4" />
+                  <span>Payment Status: {order.paymentStatus}</span>
+                </div>
+                <div className="mt-2 flex items-center gap-2 text-xs text-[#6b6b6b]">
+                  <Clock className="size-3.5" />
+                  <span>
+                    Last Updated: {new Date(order.updatedAt).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export default function OrdersManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] =
     useState<OrdersParams["paymentStatus"]>("all");
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const { data, isLoading } = useOrders({
     page: currentPage,
@@ -119,7 +291,7 @@ export default function OrdersManagement() {
 
           <div className="flex flex-wrap items-center gap-4">
             {/* Search */}
-            <div className="flex h-[52px] w-full sm:w-[400px]">
+            {/* <div className="flex h-[52px] w-full sm:w-[400px]">
               <input
                 type="text"
                 placeholder="Search by transaction ID..."
@@ -134,7 +306,7 @@ export default function OrdersManagement() {
               >
                 <Search className="size-5 text-white" />
               </button>
-            </div>
+            </div> */}
 
             {/* Status Filter */}
             <div className="flex gap-2">
@@ -193,6 +365,9 @@ export default function OrdersManagement() {
                   <th className="px-4 py-4 text-center text-base font-bold text-black">
                     Date
                   </th>
+                  <th className="px-4 py-4 text-center text-base font-bold text-black">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -212,7 +387,7 @@ export default function OrdersManagement() {
                     <td className="max-w-[250px] px-4 py-4">
                       {order.items.map((item, idx) => (
                         <div key={idx} className="text-sm text-[#0f172a]">
-                          {item.book.title}{" "}
+                          {item.book?.title || "Unknown Book"}{" "}
                           <span className="text-xs text-[#6c6c6c]">
                             x{item.quantity}
                           </span>
@@ -238,6 +413,14 @@ export default function OrdersManagement() {
                         day: "numeric",
                         year: "numeric",
                       })}
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <button
+                        onClick={() => setSelectedOrder(order)}
+                        className="rounded-full border border-[#1bb400] px-3 py-1 text-base text-[#0ca22f] transition-colors hover:bg-[#0ca22f] hover:text-white"
+                      >
+                        Details
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -301,6 +484,17 @@ export default function OrdersManagement() {
           </div>
         )}
       </div>
+
+      {/* Order Detail Modal */}
+      {selectedOrder && (
+        <OrderDetailModal
+          order={selectedOrder}
+          open={!!selectedOrder}
+          onOpenChange={(open) => {
+            if (!open) setSelectedOrder(null);
+          }}
+        />
+      )}
     </div>
   );
 }

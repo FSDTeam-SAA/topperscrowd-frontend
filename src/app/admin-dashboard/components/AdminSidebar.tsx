@@ -79,7 +79,7 @@ export default function AdminSidebar() {
       {/* Logo + Nav */}
       <div className="flex flex-col gap-8 pt-4">
         {/* Logo */}
-        <div className="flex items-center justify-center px-6">
+        <Link href="/" className="flex items-center justify-center px-6">
           <Image
             src="/images/logo.png"
             alt="Ka Thorian"
@@ -88,7 +88,7 @@ export default function AdminSidebar() {
             className="object-contain"
             priority
           />
-        </div>
+        </Link>
 
         {/* Navigation */}
         <nav className="flex flex-col">

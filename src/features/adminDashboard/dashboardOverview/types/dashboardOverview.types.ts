@@ -13,7 +13,7 @@ export interface RecentOrderUser {
 }
 
 export interface RecentOrderItem {
-  book: string;
+  book: string | { title: string };
   price: number;
   quantity: number;
 }

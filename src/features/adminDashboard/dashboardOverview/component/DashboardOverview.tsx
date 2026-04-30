@@ -7,9 +7,22 @@ import {
   DollarSign,
   ChevronDown,
   Loader2,
+  Calendar,
+  CreditCard,
+  Package,
+  User,
+  Hash,
+  Clock,
 } from "lucide-react";
 import { useDashboardOverview } from "../hooks/useDashboardOverview";
 import { RecentOrder } from "../types/dashboardOverview.types";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 // --- Chart Data (months + values for the area chart) ---
 
@@ -139,8 +152,169 @@ function formatCurrency(amount: number): string {
   return `$${amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
+function OrderDetailModal({
+  order,
+  open,
+  onOpenChange,
+}: {
+  order: RecentOrder;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const customerName = `${order.userId.firstName} ${order.userId.lastName}`;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl overflow-hidden p-0 sm:rounded-2xl">
+        <DialogHeader className="border-b border-[#f0f0f0] bg-gray-50/50 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-xl font-bold text-[#111]">
+              Order Details
+            </DialogTitle>
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-bold capitalize ${
+                order.paymentStatus === "paid"
+                  ? "bg-green-100 text-[#0ca22f]"
+                  : order.paymentStatus === "pending"
+                    ? "bg-amber-100 text-[#b45309]"
+                    : "bg-red-100 text-[#dc2626]"
+              }`}
+            >
+              {order.paymentStatus}
+            </span>
+          </div>
+        </DialogHeader>
+
+        <div className="max-h-[80vh] overflow-y-auto px-6 py-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {/* Left Column: Customer & Order Info */}
+            <div className="space-y-6">
+              {/* Order Info */}
+              <div className="rounded-xl border border-[#e6e6e6] bg-white p-4">
+                <h4 className="mb-4 flex items-center gap-2 text-sm font-bold text-[#6b6b6b] uppercase tracking-wider">
+                  <Hash className="size-4" /> Order Info
+                </h4>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-[#6b6b6b]">Order ID</span>
+                    <span className="text-sm font-mono font-medium text-[#111]">
+                      #{order._id.slice(-8).toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-[#6b6b6b]">Date</span>
+                    <span className="flex items-center gap-1.5 text-sm font-medium text-[#111]">
+                      <Calendar className="size-3.5 text-[#6b6b6b]" />
+                      {new Date(order.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-[#6b6b6b]">Type</span>
+                    <span className="text-sm font-medium capitalize text-[#111]">
+                      {order.orderType}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Customer Info */}
+              <div className="rounded-xl border border-[#e6e6e6] bg-white p-4">
+                <h4 className="mb-4 flex items-center gap-2 text-sm font-bold text-[#6b6b6b] uppercase tracking-wider">
+                  <User className="size-4" /> Customer Details
+                </h4>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex size-10 items-center justify-center rounded-full bg-[#4f46e5] text-sm font-bold text-white">
+                    {order.userId.firstName[0]}
+                    {order.userId.lastName[0]}
+                  </div>
+                  <div>
+                    <p className="text-base font-bold text-[#111]">
+                      {customerName}
+                    </p>
+                    <p className="text-sm text-[#6b6b6b]">
+                      {order.userId.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Order Summary */}
+            <div className="space-y-6">
+              <div className="rounded-xl border border-[#e6e6e6] bg-white p-4">
+                <h4 className="mb-4 flex items-center gap-2 text-sm font-bold text-[#6b6b6b] uppercase tracking-wider">
+                  <Package className="size-4" /> Order Summary
+                </h4>
+                <div className="space-y-4">
+                  {order.items.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start justify-between gap-4 border-b border-[#f0f0f0] pb-3 last:border-0 last:pb-0"
+                    >
+                      <div className="flex-1">
+                        <p className="text-sm font-bold text-[#111] line-clamp-2">
+                          {typeof item.book === "object" && item.book !== null
+                            ? item.book.title
+                            : typeof item.book === "string"
+                              ? `#${item.book.slice(-4).toUpperCase()}`
+                              : "Unknown Item"}
+                        </p>
+                        <p className="text-xs text-[#6b6b6b]">
+                          Qty: {item.quantity} × {formatCurrency(item.price)}
+                        </p>
+                      </div>
+                      <p className="text-sm font-bold text-[#111]">
+                        {formatCurrency(item.price * item.quantity)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 space-y-2 border-t border-[#e6e6e6] pt-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-[#6b6b6b]">Subtotal</span>
+                    <span className="text-sm font-medium text-[#111]">
+                      {formatCurrency(order.totalAmount)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-t border-[#f0f0f0] pt-2">
+                    <span className="text-base font-bold text-[#111]">
+                      Total
+                    </span>
+                    <span className="text-lg font-bold text-[#4f46e5]">
+                      {formatCurrency(order.totalAmount)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-[#e6e6e6] bg-[#fcfcfc] p-4">
+                <div className="flex items-center gap-2 text-sm text-[#6b6b6b]">
+                  <CreditCard className="size-4" />
+                  <span>Payment Method: Stripe</span>
+                </div>
+                <div className="mt-2 flex items-center gap-2 text-xs text-[#6b6b6b]">
+                  <Clock className="size-3.5" />
+                  <span>
+                    Last Updated: {new Date(order.updatedAt).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export default function AdminDashboard() {
   const { data, isLoading, error } = useDashboardOverview();
+  const [selectedOrder, setSelectedOrder] = useState<RecentOrder | null>(null);
 
   const stats = data?.data
     ? [
@@ -257,7 +431,10 @@ export default function AdminDashboard() {
                       {formatCurrency(order.totalAmount)}
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <button className="rounded-full border border-[#1bb400] px-3 py-1 text-base text-[#0ca22f] transition-colors hover:bg-[#0ca22f] hover:text-white">
+                      <button
+                        onClick={() => setSelectedOrder(order)}
+                        className="rounded-full border border-[#1bb400] px-3 py-1 text-base text-[#0ca22f] transition-colors hover:bg-[#0ca22f] hover:text-white"
+                      >
                         Details
                       </button>
                     </td>
@@ -268,6 +445,17 @@ export default function AdminDashboard() {
           </table>
         </div>
       </div>
+
+      {/* Order Detail Modal */}
+      {selectedOrder && (
+        <OrderDetailModal
+          order={selectedOrder}
+          open={!!selectedOrder}
+          onOpenChange={(open) => {
+            if (!open) setSelectedOrder(null);
+          }}
+        />
+      )}
     </div>
   );
 }

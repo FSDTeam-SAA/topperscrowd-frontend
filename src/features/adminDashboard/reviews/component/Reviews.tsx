@@ -227,7 +227,7 @@ function ReviewCard({ review }: { review: Review }) {
         <div className="mt-4 flex items-center gap-4">
           <button
             onClick={() => setShowDetail(true)}
-            className="flex items-center gap-1.5 rounded-md border border-[#4f46e5] px-5 py-2 text-sm font-medium text-[#4f46e5] transition-colors hover:bg-[#4f46e5] hover:text-white"
+            className="flex items-center gap-1.5 rounded-md border border-[#4f46e5] px-5 py-2 text-sm font-medium text-[#4f46e5] transition-colors hover:bg-[#4f46e5] hover:text-white cursor-pointer"
           >
             <Eye className="size-4" />
             Details
@@ -336,10 +336,10 @@ export default function Reviews() {
           </div>
 
           {/* Filter Button */}
-          <button className="flex h-[52px] items-center gap-2 rounded-lg border-2 border-[#4f46e5] px-4 text-base font-bold text-[#4f46e5] transition-colors hover:bg-[#4f46e5] hover:text-white">
+          {/* <button className="flex h-[52px] items-center gap-2 rounded-lg border-2 border-[#4f46e5] px-4 text-base font-bold text-[#4f46e5] transition-colors hover:bg-[#4f46e5] hover:text-white">
             <Filter className="size-5" />
             Filter
-          </button>
+          </button> */}
         </div>
 
         {/* Review Cards Grid */}
