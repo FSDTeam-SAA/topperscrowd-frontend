@@ -66,7 +66,7 @@ export default function CartItem({
                   onClick={() =>
                     onUpdateQuantity(id, Math.max(1, quantity - 1))
                   }
-                  className="size-7 rounded border border-slate-300 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                  className="size-7 rounded border border-slate-300 text-sm font-medium text-slate-600 hover:bg-slate-100 cursor-pointer"
                 >
                   -
                 </button>
@@ -75,7 +75,7 @@ export default function CartItem({
                 </span>
                 <button
                   onClick={() => onUpdateQuantity(id, quantity + 1)}
-                  className="size-7 rounded border border-slate-300 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                  className="size-7 rounded border border-slate-300 text-sm font-medium text-slate-600 hover:bg-slate-100 cursor-pointer"
                 >
                   +
                 </button>
@@ -83,7 +83,7 @@ export default function CartItem({
             )}
             <button
               onClick={() => onRemove(id)}
-              className="rounded border border-slate-300 bg-slate-50 px-8 py-2 text-sm font-medium text-indigo-600 transition-colors hover:bg-slate-100"
+              className="rounded border border-slate-300 bg-slate-50 px-8 py-2 text-sm font-medium text-indigo-600 transition-colors hover:bg-slate-100 cursor-pointer"
             >
               Remove
             </button>

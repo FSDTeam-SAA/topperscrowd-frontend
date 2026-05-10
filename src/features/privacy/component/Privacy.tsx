@@ -3,14 +3,27 @@
 import React from "react";
 import { motion } from "framer-motion";
 import {
-  Shield,
-  Eye,
-  Database,
-  Lock,
-  RefreshCw,
-  UserCheck,
+  ShieldCheck,
+  FileText,
   ChevronRight,
   ArrowRight,
+  Database,
+  Eye,
+  CreditCard,
+  Settings,
+  Share2,
+  Globe,
+  MapPin,
+  UserCheck,
+  Cookie,
+  Users,
+  Ban,
+  Mail,
+  Shield,
+  AlertTriangle,
+  RefreshCw,
+  CheckCircle,
+  Phone,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -28,51 +41,111 @@ const staggerContainer = {
   },
 };
 
-export default function Privacy() {
-  const lastUpdated = "May 10, 2026";
+export default function PrivacyPolicy() {
+  const lastUpdated = "May 2026";
 
   const sections = [
     {
-      id: "welcome",
-      title: "Welcome to Ka Thorian",
-      icon: <Shield className="w-6 h-6 text-orange-500" />,
-      content:
-        "This Privacy Policy explains how we collect, use, and protect your information when you use our platform, listen to audio stories, browse our library, or interact with our services. We are committed to ensuring that your privacy is protected.",
-    },
-    {
       id: "collection",
-      title: "Information We Collect",
+      title: "Collection of Personal Information",
       icon: <Database className="w-6 h-6 text-orange-500" />,
-      content:
-        "We may collect information such as your name and email address, account and profile information, listening activity and preferences, device, browser, and usage analytics, as well as payment and subscription details.",
+      content: `We collect personal information when you register on our site, place an order, subscribe to our newsletter, respond to a survey, fill out a form, or enter information on our site. The information collected includes your name, email address, mailing address, phone number, and credit card details.\n\nWe also collect information automatically when you visit our site, including your IP address, browser type, operating system, referring URLs, and pages visited. This is done using cookies and similar tracking technologies.`,
     },
     {
-      id: "usage",
-      title: "How We Use Your Information",
+      id: "use",
+      title: "Use and Processing of Collected Information",
       icon: <Eye className="w-6 h-6 text-orange-500" />,
-      content:
-        "Your information helps us provide and improve our audio experience, personalize recommendations and content, maintain platform security and performance, send important updates, and respond to support requests.",
+      content: `We use the information we collect in various ways, including to:\n\n• Provide, operate, and maintain our website\n• Improve, personalize, and expand our website\n• Understand and analyze how you use our website\n• Develop new products, services, features, and functionality\n• Communicate with you, either directly or through one of our partners\n• Send you emails and process your transactions\n• Find and prevent fraud`,
     },
     {
-      id: "protection",
-      title: "Data Protection",
-      icon: <Lock className="w-6 h-6 text-orange-500" />,
-      content:
-        "We implement industry-standard security measures to protect your data from unauthorized access, misuse, or disclosure. While no system is completely secure, we continuously work to safeguard your information.",
+      id: "payment",
+      title: "Payment Information",
+      icon: <CreditCard className="w-6 h-6 text-orange-500" />,
+      content: `We use third-party payment processors to handle billing on our behalf. When you make a payment, your payment information is transmitted directly to our payment processors and is not stored on our servers. These processors are PCI DSS compliant and use industry-standard encryption to protect your data.`,
+    },
+    {
+      id: "managing",
+      title: "Managing Information",
+      icon: <Settings className="w-6 h-6 text-orange-500" />,
+      content: `You have control over your personal information. You can review and update your account details at any time through your profile settings. You may also request access to, correction of, or deletion of your personal data by contacting us. We will respond to your request within 30 days.`,
+    },
+    {
+      id: "disclosure",
+      title: "Disclosure of Information",
+      icon: <Share2 className="w-6 h-6 text-orange-500" />,
+      content: `We do not sell, trade, or rent your personal identification information to others. We may share generic aggregated demographic information not linked to any personal identification information regarding visitors and users with our business partners, trusted affiliates, and advertisers.\n\nWe may disclose your information when we believe release is appropriate to comply with the law, enforce our site policies, or protect ours or others' rights, property, or safety.`,
+    },
+    {
+      id: "transfer",
+      title: "Transfer of Personal Information",
+      icon: <Globe className="w-6 h-6 text-orange-500" />,
+      content: `Your information may be transferred to and maintained on computers located outside of your state, province, country, or governmental jurisdiction where data protection laws may differ. Your consent to this Privacy Policy followed by your submission of such information represents your agreement to that transfer.`,
+    },
+    {
+      id: "region",
+      title: "Region-Specific Notices",
+      icon: <MapPin className="w-6 h-6 text-orange-500" />,
+      content: `Depending on your location, you may have additional rights under applicable privacy laws. Residents of the European Economic Area (EEA) have rights under GDPR including the right to access, rectify, and erase their data. California residents have rights under CCPA including the right to know, delete, and opt-out of the sale of personal information.`,
     },
     {
       id: "rights",
-      title: "Your Rights",
+      title: "How to Exercise Your Rights",
       icon: <UserCheck className="w-6 h-6 text-orange-500" />,
-      content:
-        "You may request access, correction, or deletion of your personal information at any time by contacting our support team. We respect your control over your personal data.",
+      content: `To exercise any of your privacy rights, please contact our privacy team via the contact information below. We will acknowledge your request within 10 business days and fulfill it within 30 days, subject to identity verification and applicable legal exceptions.`,
+    },
+    {
+      id: "cookies",
+      title: "Cookies",
+      icon: <Cookie className="w-6 h-6 text-orange-500" />,
+      content: `Our website uses cookies to enhance your experience. Cookies are small files placed on your device that help us analyze web traffic and remember your preferences. You can instruct your browser to refuse all cookies or indicate when a cookie is being sent. However, if you do not accept cookies, some portions of our site may not function properly.`,
+    },
+    {
+      id: "children",
+      title: "Privacy of Children",
+      icon: <Users className="w-6 h-6 text-orange-500" />,
+      content: `Our website is not directed to children under the age of 13. We do not knowingly collect personally identifiable information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us and we will delete that information from our systems.`,
+    },
+    {
+      id: "donotsell",
+      title: "Do Not Sell My Personal Information",
+      icon: <Ban className="w-6 h-6 text-orange-500" />,
+      content: `We do not sell personal information to third parties. If you are a California resident and wish to opt out of the sale of personal information (as defined by the CCPA), you may submit a request using our Do Not Sell link or by contacting us directly.`,
+    },
+    {
+      id: "email",
+      title: "Email Marketing",
+      icon: <Mail className="w-6 h-6 text-orange-500" />,
+      content: `With your permission, we may send you emails about our products, services, and promotions. You may opt out of receiving any or all of these communications by clicking the unsubscribe link in any email we send. Please note that even after unsubscribing from marketing emails, we may still send you transactional emails related to your account.`,
+    },
+    {
+      id: "security",
+      title: "Information Security",
+      icon: <Shield className="w-6 h-6 text-orange-500" />,
+      content: `We take appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. We use SSL encryption for all data transmission and restrict access to personal data to employees who need it to perform their job functions.`,
+    },
+    {
+      id: "breach",
+      title: "Data Breach",
+      icon: <AlertTriangle className="w-6 h-6 text-orange-500" />,
+      content: `In the event of a data breach that is likely to result in a risk to the rights and freedoms of individuals, we will notify the relevant supervisory authority within 72 hours of becoming aware of the breach. Affected individuals will be notified without undue delay when the breach is likely to result in a high risk to their rights and freedoms.`,
     },
     {
       id: "changes",
-      title: "Changes to This Policy",
+      title: "Changes and Amendments",
       icon: <RefreshCw className="w-6 h-6 text-orange-500" />,
-      content:
-        "We may update this Privacy Policy periodically. Any changes will be posted on this page with an updated revision date. We encourage you to review this policy occasionally.",
+      content: `We reserve the right to modify this privacy policy at any time. We will notify you of any changes by posting the new policy on this page and updating the effective date. We encourage you to review this policy periodically. Your continued use of the website after changes are posted constitutes your acceptance of those changes.`,
+    },
+    {
+      id: "acceptance",
+      title: "Acceptance of This Policy",
+      icon: <CheckCircle className="w-6 h-6 text-orange-500" />,
+      content: `By using this website, you signify your acceptance of this Privacy Policy. If you do not agree to this policy, please do not use our site. Your continued use of the site following the posting of changes to this policy will be deemed your acceptance of those changes.`,
+    },
+    {
+      id: "contacting",
+      title: "Contacting Us",
+      icon: <Phone className="w-6 h-6 text-orange-500" />,
+      content: `If you have any questions about this Privacy Policy, the practices of this site, or your dealings with this website, please contact us at:\n\nKa Thorian Publishing LLC\nEmail: privacy@kathorian.com`,
     },
   ];
 
@@ -95,7 +168,7 @@ export default function Privacy() {
               transition={{ duration: 0.5 }}
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-50 border border-orange-100 text-[11px] font-bold tracking-wider uppercase text-orange-600 mb-8 shadow-sm"
             >
-              <Shield className="w-3.5 h-3.5" />
+              <ShieldCheck className="w-3.5 h-3.5" />
               Privacy Center
             </motion.div>
 
@@ -116,8 +189,9 @@ export default function Privacy() {
               className="max-w-2xl mx-auto text-lg md:text-xl text-zinc-500 leading-relaxed mb-8"
             >
               At <span className="text-zinc-900 font-semibold">Ka Thorian</span>
-              , we believe immersive storytelling should come with transparency
-              and absolute respect for your privacy.
+              , we respect your privacy and are committed to protecting your
+              personal data. This policy explains how we collect, use, and
+              safeguard your information.
             </motion.p>
 
             <motion.div
@@ -164,7 +238,7 @@ export default function Privacy() {
                 <h3 className="text-xl font-bold mb-4 group-hover:text-orange-600 transition-colors">
                   {section.title}
                 </h3>
-                <p className="text-zinc-500 leading-relaxed text-sm md:text-base flex-grow">
+                <p className="text-zinc-500 leading-relaxed text-sm md:text-base flex-grow whitespace-pre-line">
                   {section.content}
                 </p>
               </motion.div>

@@ -3,15 +3,19 @@
 import React from "react";
 import { motion } from "framer-motion";
 import {
-  Scale,
+  ShieldCheck,
   FileText,
-  Handshake,
-  Lock,
-  AlertCircle,
-  UserCheck,
   ChevronRight,
   ArrowRight,
-  ShieldCheck,
+  Scale,
+  UserCheck,
+  CreditCard,
+  FileCheck,
+  Link as LinkIcon,
+  Shield,
+  RefreshCw,
+  CheckCircle,
+  Mail,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -30,50 +34,56 @@ const staggerContainer = {
 };
 
 export default function Terms() {
-  const lastUpdated = "May 10, 2026";
+  const lastUpdated = "May 9, 2026";
 
   const sections = [
     {
-      id: "agreement",
-      title: "Agreement to Terms",
-      icon: <Handshake className="w-6 h-6 text-orange-500" />,
-      content:
-        "By accessing or using Ka Thorian, you agree to be bound by these Terms of Service. If you do not agree to all of these terms, do not use our platform or services.",
-    },
-    {
       id: "accounts",
-      title: "User Accounts",
+      title: "Accounts and membership",
       icon: <UserCheck className="w-6 h-6 text-orange-500" />,
-      content:
-        "When you create an account, you must provide accurate and complete information. You are solely responsible for the activity that occurs on your account and for keeping your password secure.",
+      content: `If you create an account on the Website, you are responsible for maintaining the security of your account and you are fully responsible for all activities that occur under the account and any other actions taken in connection with it. We may monitor and review new accounts before you may sign in and start using the Services. Providing false contact information of any kind may result in the termination of your account. You must immediately notify us of any unauthorized uses of your account or any other breaches of security. We will not be liable for any acts or omissions by you, including any damages of any kind incurred as a result of such acts or omissions. We may suspend, disable, or delete your account (or any part thereof) if we determine that you have violated any provision of this Agreement or that your conduct or content would tend to damage our reputation and goodwill. If we delete your account for the foregoing reasons, you may not re-register for our Services. We may block your email address and Internet protocol address to prevent further registration.`,
     },
     {
-      id: "content",
-      title: "Content & Intellectual Property",
-      icon: <FileText className="w-6 h-6 text-orange-500" />,
-      content:
-        "All audio stories, text, graphics, and other materials on Ka Thorian are owned by us or our licensors and are protected by copyright and other intellectual property laws.",
+      id: "billing",
+      title: "Billing and payments",
+      icon: <CreditCard className="w-6 h-6 text-orange-500" />,
+      content: `You shall pay all fees or charges to your account in accordance with the fees, charges, and billing terms in effect at the time a fee or charge is due and payable. If, in our judgment, your purchase constitutes a high-risk transaction, we will require you to provide us with a copy of your valid government-issued photo identification, and possibly a copy of a recent bank statement for the credit or debit card used for the purchase. We reserve the right to change product pricing at any time. We also reserve the right to refuse any order you place with us. We may, in our sole discretion, limit or cancel quantities purchased per person, per household or per order. These restrictions may include orders placed by or under the same customer account, the same credit card, and/or orders that use the same billing and/or shipping address. In the event that we make a change to or cancel an order, we may attempt to notify you by contacting the email and/or billing address/phone number provided at the time the order was made.`,
     },
     {
-      id: "conduct",
-      title: "Prohibited Conduct",
-      icon: <AlertCircle className="w-6 h-6 text-orange-500" />,
-      content:
-        "You agree not to engage in any activity that interferes with or disrupts the platform, including hacking, scraping, or transmitting viruses or malicious code.",
+      id: "accuracy",
+      title: "Accuracy of information",
+      icon: <FileCheck className="w-6 h-6 text-orange-500" />,
+      content: `Occasionally there may be information on the Website that contains typographical errors, inaccuracies or omissions that may relate to promotions and offers. We reserve the right to correct any errors, inaccuracies or omissions, and to change or update information or cancel orders if any information on the Website or Services is inaccurate at any time without prior notice (including after you have submitted your order). We undertake no obligation to update, amend or clarify information on the Website including, without limitation, pricing information, except as required by law. No specified update or refresh date applied on the Website should be taken to indicate that all information on the Website or Services has been modified or updated.`,
     },
     {
-      id: "liability",
-      title: "Limitation of Liability",
-      icon: <Scale className="w-6 h-6 text-orange-500" />,
-      content:
-        "To the maximum extent permitted by law, Ka Thorian shall not be liable for any indirect, incidental, special, or consequential damages resulting from your use of the platform.",
+      id: "links",
+      title: "Links to other resources",
+      icon: <LinkIcon className="w-6 h-6 text-orange-500" />,
+      content: `Although the Website and Services may link to other resources (such as websites, mobile applications, etc.), we are not, directly or indirectly, implying any approval, association, sponsorship, endorsement, or affiliation with any linked resource, unless specifically stated herein. We are not responsible for examining or evaluating, and we do not warrant the offerings of, any businesses or individuals or the content of their resources. We do not assume any responsibility or liability for the actions, products, services, and content of any other third parties. You should carefully review the legal statements and other conditions of use of any resource which you access through a link on the Website. Your linking to any other off-site resources is at your own risk.`,
     },
     {
-      id: "termination",
-      title: "Termination",
-      icon: <Lock className="w-6 h-6 text-orange-500" />,
-      content:
-        "We reserve the right to terminate or suspend your account and access to our services at our sole discretion, without notice, for conduct that we believe violates these Terms.",
+      id: "intellectual",
+      title: "Intellectual property rights",
+      icon: <Shield className="w-6 h-6 text-orange-500" />,
+      content: `"Intellectual Property Rights" means all present and future rights conferred by statute, common law or equity in or in relation to any copyright and related rights, trademarks, designs, patents, inventions, goodwill and the right to sue for passing off, rights to inventions, rights to use, and all other intellectual property rights, in each case whether registered or unregistered and including all applications and rights to apply for and be granted, rights to claim priority from, such rights and all similar or equivalent rights or forms of protection and any other results of intellectual activity which subsist or will subsist now or in the future in any part of the world. This Agreement does not transfer to you any intellectual property owned by Ka Thor'ian publishing LLC or third parties, and all rights, titles, and interests in and to such property will remain (as between the parties) solely with Ka Thor'ian publishing LLC. All trademarks, service marks, graphics and logos used in connection with the Website and Services, are trademarks or registered trademarks of Ka Thor'ian publishing LLC or its licensors. Other trademarks, service marks, graphics and logos used in connection with the Website and Services may be the trademarks of other third parties. Your use of the Website and Services grants you no right or license to reproduce or otherwise use any of Ka Thor'ian publishing LLC or third party trademarks.`,
+    },
+    {
+      id: "changes",
+      title: "Changes and amendments",
+      icon: <RefreshCw className="w-6 h-6 text-orange-500" />,
+      content: `We reserve the right to modify this Agreement or its terms related to the Website and Services at any time at our discretion. When we do, we will send you an email to notify you. We may also provide notice to you in other ways at our discretion, such as through the contact information you have provided.\nAn updated version of this Agreement will be effective immediately upon the posting of the revised Agreement unless otherwise specified. Your continued use of the Website and Services after the effective date of the revised Agreement (or such other act specified at that time) will constitute your consent to those changes.`,
+    },
+    {
+      id: "acceptance",
+      title: "Acceptance of these terms",
+      icon: <CheckCircle className="w-6 h-6 text-orange-500" />,
+      content: `You acknowledge that you have read this Agreement and agree to all its terms and conditions. By accessing and using the Website and Services you agree to be bound by this Agreement. If you do not agree to abide by the terms of this Agreement, you are not authorized to access or use the Website and Services.`,
+    },
+    {
+      id: "contact",
+      title: "Contacting us",
+      icon: <Mail className="w-6 h-6 text-orange-500" />,
+      content: `If you have any questions, concerns, or complaints regarding this Agreement, we encourage you to contact us using the details below:\n\nstevegroff@kathorianpublishingllc.com`,
     },
   ];
 
@@ -96,7 +106,7 @@ export default function Terms() {
               transition={{ duration: 0.5 }}
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-50 border border-orange-100 text-[11px] font-bold tracking-wider uppercase text-orange-600 mb-8 shadow-sm"
             >
-              <ShieldCheck className="w-3.5 h-3.5" />
+              <Scale className="w-3.5 h-3.5" />
               Legal Framework
             </motion.div>
 
@@ -164,7 +174,7 @@ export default function Terms() {
                 <h3 className="text-xl font-bold mb-4 group-hover:text-orange-600 transition-colors">
                   {section.title}
                 </h3>
-                <p className="text-zinc-500 leading-relaxed text-sm md:text-base flex-grow">
+                <p className="text-zinc-500 leading-relaxed text-sm md:text-base flex-grow whitespace-pre-line">
                   {section.content}
                 </p>
               </motion.div>

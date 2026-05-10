@@ -6,16 +6,17 @@ import Link from "next/link";
 import {
   Search,
   Heart,
-  ShoppingBag,
   X,
   ChevronDown,
   Loader2,
   Menu,
+  ShoppingCart,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useBooks } from "@/features/book/hooks/useBooks";
 import { useBookCategories } from "@/features/book-category/hooks/useBookCategories";
 import { mapApiCategoryToCategory } from "@/types/shared";
+import { useCart } from "@/features/cart/hooks/useCart";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -36,6 +37,12 @@ export default function Navbar() {
     debouncedQuery ? { search: debouncedQuery, limit: 6 } : undefined,
   );
   const { data: categories } = useBookCategories();
+  const { data: cartData } = useCart();
+
+  const cartItemCount = useMemo(() => {
+    return cartData?.items?.reduce((acc, item) => acc + item.quantity, 0) || 0;
+  }, [cartData]);
+
   const searchResults = booksRes?.data ?? [];
   const mappedCategories = useMemo(
     () => (categories ?? []).map(mapApiCategoryToCategory).slice(0, 6),
@@ -102,11 +109,13 @@ export default function Navbar() {
         {/* Desktop right section */}
         <div className="hidden md:flex items-center gap-2">
           <div className="flex items-center gap-4 lg:gap-6">
-            <Link href="/wishlist">
-              <Heart className="size-7 lg:size-9 cursor-pointer text-slate-700 transition-colors hover:text-red-500" />
-            </Link>
-            <Link href="/cart">
-              <ShoppingBag className="size-7 lg:size-9 cursor-pointer text-slate-700 transition-colors hover:text-indigo-600" />
+            <Link href="/cart" className="relative group">
+              <ShoppingCart className="size-6 lg:size-7 cursor-pointer text-slate-700 transition-all duration-300 group-hover:text-orange-500 group-hover:scale-110" />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-[10px] font-bold text-white shadow-lg ring-2 ring-white transition-transform duration-300 group-hover:scale-110">
+                  {cartItemCount > 9 ? "9+" : cartItemCount}
+                </span>
+              )}
             </Link>
           </div>
           <div className="flex flex-1 items-center justify-end gap-3 pl-2">
@@ -116,10 +125,7 @@ export default function Navbar() {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center gap-2 rounded-lg px-2 lg:px-4 py-2 transition-colors hover:bg-slate-100"
                 >
-                  <span className="hidden lg:inline text-base font-medium text-indigo-600">
-                    {session.user.name || session.user.email}
-                  </span>
-                  <div className="relative size-8 lg:size-10 overflow-hidden rounded-full bg-indigo-100">
+                  <div className="relative size-8 lg:size-10 overflow-hidden rounded-full bg-indigo-100 border-2 border-transparent hover:border-orange-200 transition-all">
                     {session.user.image ? (
                       <Image
                         src={session.user.image}
@@ -141,41 +147,55 @@ export default function Navbar() {
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 rounded-lg border border-slate-200 bg-white shadow-lg">
-                    <Link
-                      href={
-                        session.user.role === "admin"
-                          ? "/admin-dashboard"
-                          : "/dashboard"
-                      }
-                      onClick={() => setDropdownOpen(false)}
-                      className="block rounded-t-lg px-4 py-3 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-50"
-                    >
-                      My Dashboard
-                    </Link>
-                    {/* <Link
+                  <div className="absolute right-0 mt-3 w-64 rounded-xl border border-slate-200 bg-white shadow-xl z-50 overflow-hidden">
+                    {/* User Profile Header */}
+                    <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/50">
+                      <p className="text-sm font-bold text-slate-900 truncate">
+                        {session.user.name || "User"}
+                      </p>
+                      <p className="text-xs text-slate-500 truncate mt-0.5">
+                        {session.user.email}
+                      </p>
+                    </div>
+
+                    <div className="py-1">
+                      <Link
+                        href={
+                          session.user.role === "admin"
+                            ? "/admin-dashboard"
+                            : "/dashboard"
+                        }
+                        onClick={() => setDropdownOpen(false)}
+                        className="block px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-orange-50 hover:text-orange-600"
+                      >
+                        My Dashboard
+                      </Link>
+                      {/* <Link
                       href="/dashboard?tab=profile"
                       onClick={() => setDropdownOpen(false)}
                       className="block px-4 py-3 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-50"
                     >
                       My Profile
                     </Link> */}
-                    {/* <Link
+                      {/* <Link
                       href="/dashboard?tab=orders"
                       onClick={() => setDropdownOpen(false)}
                       className="block px-4 py-3 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-50"
                     >
                       My Orders
                     </Link> */}
-                    <button
-                      onClick={() => {
-                        setDropdownOpen(false);
-                        signOut({ callbackUrl: "/auth/login" });
-                      }}
-                      className="w-full rounded-b-lg border-t border-slate-200 px-4 py-3 text-left text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
-                    >
-                      Logout
-                    </button>
+                    </div>
+                    <div className="border-t border-slate-100 p-1">
+                      <button
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          signOut({ callbackUrl: "/auth/login" });
+                        }}
+                        className="w-full rounded-md px-4 py-2.5 text-left text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
+                      >
+                        Logout
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -225,9 +245,16 @@ export default function Navbar() {
             <Link
               href="/cart"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-3 text-sm font-medium text-slate-700"
+              className="flex items-center justify-between text-sm font-medium text-slate-700 hover:text-orange-500 transition-colors"
             >
-              <ShoppingBag className="size-5" /> Cart
+              <div className="flex items-center gap-3">
+                <ShoppingCart className="size-5" /> Cart
+              </div>
+              {cartItemCount > 0 && (
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-[10px] font-bold text-white shadow-md">
+                  {cartItemCount}
+                </span>
+              )}
             </Link>
             {session?.user ? (
               <>
