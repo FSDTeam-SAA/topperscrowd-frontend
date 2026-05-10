@@ -13,6 +13,7 @@ import {
   MessageCircle,
   Settings,
   LogOut,
+  Tag,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -52,6 +53,11 @@ const navItems = [
     href: "/admin-dashboard/reviews",
     icon: Star,
   },
+  // {
+  //   label: "Cupon Code",
+  //   href: "/admin-dashboard/cupon-code",
+  //   icon: Tag,
+  // },
   {
     label: "Chat Room",
     href: "/admin-dashboard/chat",
@@ -79,16 +85,18 @@ export default function AdminSidebar() {
       {/* Logo + Nav */}
       <div className="flex flex-col gap-8 pt-4">
         {/* Logo */}
-        <div className="flex items-center justify-center px-6">
-          <Image
-            src="/images/logo.png"
-            alt="Ka Thorian"
-            width={180}
-            height={70}
-            className="object-contain"
-            priority
-          />
-        </div>
+        <Link href="/">
+          <div className="flex items-center justify-center px-6">
+            <Image
+              src="/images/logo.png"
+              alt="Ka Thorian"
+              width={180}
+              height={70}
+              className="object-contain"
+              priority
+            />
+          </div>
+        </Link>
 
         {/* Navigation */}
         <nav className="flex flex-col">
@@ -174,7 +182,7 @@ export default function AdminSidebar() {
             </button>
             <button
               onClick={handleLogout}
-              className="flex-1 rounded-lg bg-[#e53838] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#dc2626]"
+              className="flex-1 rounded-lg bg-[#e53838] cursor-pointer px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#dc2626]"
             >
               Yes, Log out
             </button>

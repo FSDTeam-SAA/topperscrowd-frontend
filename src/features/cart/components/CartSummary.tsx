@@ -26,7 +26,7 @@ export default function CartSummary({
         Cart Summary
       </h2>
 
-      <div className="mt-6 flex gap-3">
+      {/* <div className="mt-6 flex gap-3">
         <input
           type="text"
           placeholder="Enter Promocode"
@@ -37,7 +37,7 @@ export default function CartSummary({
         <button className="rounded-md bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700">
           Submit
         </button>
-      </div>
+      </div> */}
 
       <div className="mt-8 overflow-hidden rounded-lg border border-slate-200">
         <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3.5 text-sm text-slate-900">
