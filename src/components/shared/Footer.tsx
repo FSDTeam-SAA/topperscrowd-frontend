@@ -3,13 +3,12 @@ import Link from "next/link";
 
 const footerLinks = {
   Product: [
-    { name: "Browse", href: "/browse" },
-    { name: "Library", href: "/library" },
+    { name: "Start Listening", href: "/dashboard" },
+    { name: "Category", href: "/category" },
   ],
   Legal: [
     { name: "Privacy", href: "/privacy" },
     { name: "Terms", href: "/terms" },
-    { name: "Cookies", href: "/cookies" },
   ],
 };
 
@@ -43,9 +42,27 @@ export default function Footer() {
               <h4 className="font-serif text-2xl font-bold uppercase text-slate-900">
                 {heading}
               </h4>
+
               <div className="flex flex-col gap-3 text-sm text-slate-500">
                 {links.map((link) => (
-                  <Link key={link.name} href={link.href}>
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className="
+            relative w-fit
+            transition-colors duration-300
+            hover:text-orange-500
+            after:absolute
+            after:left-0
+            after:-bottom-1
+            after:h-[1.5px]
+            after:w-0
+            after:bg-orange-500
+            after:transition-all
+            after:duration-300
+            hover:after:w-full
+          "
+                  >
                     {link.name}
                   </Link>
                 ))}
@@ -67,6 +84,20 @@ export default function Footer() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="
+        relative inline-block
+        transition-colors duration-300
+        hover:text-orange-500
+        after:absolute
+        after:left-0
+        after:-bottom-1
+        after:h-[1.5px]
+        after:w-0
+        after:bg-orange-500
+        after:transition-all
+        after:duration-300
+        hover:after:w-full
+      "
               >
                 {link.name}
               </Link>
