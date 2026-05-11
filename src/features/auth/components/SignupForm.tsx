@@ -40,8 +40,9 @@ export default function SignupForm() {
       toast.success(
         response.message || "Account created! Please verify your email.",
       );
+      const accessToken = response.data?.accessToken;
       router.push(
-        `/auth/verify-email?flow=signup&email=${encodeURIComponent(email)}`,
+        `/auth/verify-email?flow=signup&email=${encodeURIComponent(email)}${accessToken ? `&token=${accessToken}` : ""}`,
       );
     } catch (error) {
       toast.error(

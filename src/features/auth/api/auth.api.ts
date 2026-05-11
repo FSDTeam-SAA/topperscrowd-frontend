@@ -38,7 +38,13 @@ interface VerifyOtpData {
 
 function extractErrorMessage(error: unknown): string {
   if (error instanceof AxiosError) {
-    return error.response?.data?.message || error.message;
+    const data = error.response?.data as ApiResponse;
+    if (data?.message) return data.message;
+
+    if (error.response?.status === 401) {
+      return "You are not logged in. Please log in again.";
+    }
+    return error.message;
   }
   if (error instanceof Error) return error.message;
   return "Something went wrong";
@@ -61,20 +67,37 @@ export async function registerUser(body: {
   }
 }
 
-export async function verifyEmail(otp: string): Promise<ApiResponse> {
+export async function verifyEmail(
+  otp: string,
+  accessToken?: string,
+): Promise<ApiResponse> {
   try {
-    const { data } = await api.post<ApiResponse>("/user/verify-email", {
-      otp,
-    });
+    const { data } = await api.post<ApiResponse>(
+      "/user/verify-email",
+      { otp },
+      {
+        headers: accessToken
+          ? { Authorization: `Bearer ${accessToken}` }
+          : undefined,
+      },
+    );
     return data;
   } catch (error) {
     throw new Error(extractErrorMessage(error));
   }
 }
 
-export async function resendOtp(): Promise<ApiResponse> {
+export async function resendOtp(accessToken?: string): Promise<ApiResponse> {
   try {
-    const { data } = await api.post<ApiResponse>("/user/resend-otp");
+    const { data } = await api.post<ApiResponse>(
+      "/user/resend-otp",
+      {},
+      {
+        headers: accessToken
+          ? { Authorization: `Bearer ${accessToken}` }
+          : undefined,
+      },
+    );
     return data;
   } catch (error) {
     throw new Error(extractErrorMessage(error));

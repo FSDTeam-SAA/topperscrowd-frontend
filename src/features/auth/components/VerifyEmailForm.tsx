@@ -83,10 +83,13 @@ export default function VerifyEmailForm() {
   const flow = searchParams.get("flow") || "signup";
   const email = searchParams.get("email") || "";
 
+  const token = searchParams.get("token") || "";
+
   const [otp, setOtp] = useState("");
   const [timeLeft, setTimeLeft] = useState(179);
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -105,6 +108,7 @@ export default function VerifyEmailForm() {
     }
 
     setLoading(true);
+    setErrorMessage(null);
 
     try {
       if (flow === "forgot-password") {
@@ -112,14 +116,15 @@ export default function VerifyEmailForm() {
         toast.success(response.message || "OTP verified successfully");
         router.push("/auth/change-password");
       } else {
-        const response = await verifyEmail(otp);
+        const response = await verifyEmail(otp, token);
         toast.success(response.message || "Email verified successfully");
         router.push("/auth/login");
       }
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Verification failed",
-      );
+      const message =
+        error instanceof Error ? error.message : "Verification failed";
+      setErrorMessage(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -127,20 +132,22 @@ export default function VerifyEmailForm() {
 
   const handleResend = async () => {
     setResending(true);
+    setErrorMessage(null);
 
     try {
       if (flow === "forgot-password") {
         await resendForgotOtp();
       } else {
-        await resendOtp();
+        await resendOtp(token);
       }
       toast.success("OTP resent successfully");
       setOtp("");
       setTimeLeft(179);
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to resend OTP",
-      );
+      const message =
+        error instanceof Error ? error.message : "Failed to resend OTP";
+      setErrorMessage(message);
+      toast.error(message);
     } finally {
       setResending(false);
     }
@@ -152,12 +159,32 @@ export default function VerifyEmailForm() {
         {/* Header */}
         <div className="space-y-2">
           <h1 className="text-4xl font-bold text-white">Verify Email</h1>
-          <p className="text-center text-base text-gray-400">
+          <p className="text-left text-base text-gray-400">
             {email
               ? `Enter OTP sent to ${email}`
               : "Enter OTP to verify your email address"}
           </p>
         </div>
+
+        {/* Error Banner */}
+        {errorMessage && (
+          <div className="flex items-start gap-3 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3">
+            <svg
+              className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+              />
+            </svg>
+            <p className="text-sm text-red-400">{errorMessage}</p>
+          </div>
+        )}
 
         {/* OTP Input */}
         <div className="space-y-6">
@@ -173,7 +200,7 @@ export default function VerifyEmailForm() {
               </span>
             </div>
 
-            <div className="text-sm text-white">
+            {/* <div className="text-sm text-white">
               Didn&apos;t get a code?{" "}
               <button
                 onClick={handleResend}
@@ -182,7 +209,7 @@ export default function VerifyEmailForm() {
               >
                 {resending ? "Resending..." : "Resend"}
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 
