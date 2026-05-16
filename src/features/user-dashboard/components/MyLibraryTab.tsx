@@ -19,6 +19,7 @@ import {
   useContinueListening,
   useRecentPurchases,
   useMyBooks,
+  useUpdateProgress,
 } from "../hooks/useLibrary";
 import { LibraryBook } from "../types/library.types";
 
@@ -43,7 +44,13 @@ function StatusBadge({ status }: { status: "done" | "reading" | "wishlist" }) {
   );
 }
 
-function BookCardComponent({ book }: { book: LibraryBook }) {
+function BookCardComponent({
+  book,
+  onPlay,
+}: {
+  book: LibraryBook;
+  onPlay?: () => void;
+}) {
   return (
     <div className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0px_4px_24px_0px_rgba(15,23,42,0.06)]">
       <div className="relative h-40 w-full overflow-hidden">
@@ -53,6 +60,20 @@ function BookCardComponent({ book }: { book: LibraryBook }) {
           fill
           className="object-cover transition-transform group-hover:scale-105"
         />
+        {onPlay && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-hover:opacity-100 cursor-pointer">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onPlay();
+              }}
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg transition-transform hover:scale-110 active:scale-95"
+            >
+              <Play className="h-6 w-6 ml-0.5 fill-current" />
+            </button>
+          </div>
+        )}
       </div>
       <div className="p-3">
         <h4 className="text-sm font-semibold text-slate-900 leading-tight">
@@ -100,6 +121,7 @@ export default function MyLibraryTab() {
     myBooksPage,
     10,
   );
+  const { mutate: updateProgress } = useUpdateProgress();
 
   const stats = statsData?.data;
   const continueListening = continueData?.data;
@@ -140,6 +162,17 @@ export default function MyLibraryTab() {
       audio.src = "";
     };
   }, [audioUrl, continueListening?.progress]);
+
+  const handlePlay = useCallback(
+    (bookId: string) => {
+      updateProgress({
+        bookId,
+        progress: 120,
+        totalDuration: 3600,
+      });
+    },
+    [updateProgress],
+  );
 
   const togglePlayPause = useCallback(() => {
     const audio = audioRef.current;
@@ -378,7 +411,11 @@ export default function MyLibraryTab() {
         ) : recentPurchases.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {recentPurchases.map((book) => (
-              <BookCardComponent key={book._id} book={book} />
+              <BookCardComponent
+                key={book._id}
+                book={book}
+                onPlay={() => handlePlay(book._id)}
+              />
             ))}
           </div>
         ) : (
@@ -402,7 +439,10 @@ export default function MyLibraryTab() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
               {myBooks.map((book) => (
                 <div key={book._id} className="space-y-2.5">
-                  <BookCardComponent book={book} />
+                  <BookCardComponent
+                    book={book}
+                    onPlay={() => handlePlay(book._id)}
+                  />
                 </div>
               ))}
             </div>

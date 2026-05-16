@@ -53,11 +53,11 @@ const navItems = [
     href: "/admin-dashboard/reviews",
     icon: Star,
   },
-  // {
-  //   label: "Cupon Code",
-  //   href: "/admin-dashboard/cupon-code",
-  //   icon: Tag,
-  // },
+  {
+    label: "Cupon Code",
+    href: "/admin-dashboard/cupon-code",
+    icon: Tag,
+  },
   {
     label: "Chat Room",
     href: "/admin-dashboard/chat",

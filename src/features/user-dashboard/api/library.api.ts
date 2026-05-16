@@ -45,3 +45,15 @@ export async function fetchMyBooks(
   );
   return data;
 }
+
+export async function updateListenerProgress(payload: {
+  bookId: string;
+  progress: number;
+  totalDuration: number;
+}): Promise<ApiResponse<ContinueListeningData>> {
+  const { data } = await api.post<ApiResponse<ContinueListeningData>>(
+    "/listener-progress/",
+    payload,
+  );
+  return data;
+}

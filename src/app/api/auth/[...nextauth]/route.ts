@@ -64,13 +64,20 @@ const handler = NextAuth({
               password: credentials.password,
             }),
           });
+          if (!res.ok) {
+            const contentType = res.headers.get("content-type");
+            let errorMessage = "Login failed";
+            if (contentType && contentType.includes("application/json")) {
+              const errorData = await res.json();
+              errorMessage = errorData.message || errorMessage;
+            } else {
+              errorMessage = await res.text();
+            }
+            throw new Error(errorMessage);
+          }
 
           const data = await res.json();
           console.log("API Login Response:", JSON.stringify(data, null, 2));
-
-          if (!res.ok) {
-            throw new Error(data.message || "Login failed");
-          }
 
           const user = data.data?.user;
           const accessToken = data.data?.accessToken;

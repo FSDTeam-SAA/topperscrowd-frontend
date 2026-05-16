@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   fetchLibraryStats,
   fetchContinueListening,
   fetchRecentPurchases,
   fetchMyBooks,
+  updateListenerProgress,
 } from "../api/library.api";
 
 export function useLibraryStats() {
@@ -35,5 +36,16 @@ export function useMyBooks(
   return useQuery({
     queryKey: ["myBooks", page, limit, search],
     queryFn: () => fetchMyBooks(page, limit, search),
+  });
+}
+
+export function useUpdateProgress() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateListenerProgress,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["continueListening"] });
+      queryClient.invalidateQueries({ queryKey: ["libraryStats"] });
+    },
   });
 }
