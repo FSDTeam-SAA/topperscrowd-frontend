@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import {
   Plus,
   X,
@@ -11,14 +12,28 @@ import {
   DollarSign,
   Users,
   Calendar,
+  Trash2,
 } from "lucide-react";
-import { useGetAllCoupons } from "../hooks/useCupon";
+import { useGetAllCoupons, useDeleteCoupon } from "../hooks/useCupon";
 import CreateCouponForm from "@/features/coupon/components/CreateCouponForm";
 
 export default function CouponManagement() {
   const [page, setPage] = useState(1);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const { data, isLoading, error } = useGetAllCoupons(page, 10);
+  const { mutate: deleteCoupon } = useDeleteCoupon();
+
+  const handleDelete = (id: string) => {
+    deleteCoupon(id, {
+      onSuccess: () => {
+        toast.success("Coupon deleted successfully");
+      },
+      onError: (error: unknown) => {
+        const err = error as { response?: { data?: { message?: string } } };
+        toast.error(err?.response?.data?.message || "Failed to delete coupon");
+      },
+    });
+  };
 
   const coupons = data?.data || [];
   const meta = data?.meta;
@@ -158,9 +173,15 @@ export default function CouponManagement() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
-                        <MoreVertical className="size-5" />
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleDelete(coupon._id)}
+                          className="p-1.5 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                          title="Delete Coupon"
+                        >
+                          <Trash2 className="size-5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

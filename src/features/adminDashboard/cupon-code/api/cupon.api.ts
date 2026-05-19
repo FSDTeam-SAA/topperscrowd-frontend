@@ -44,3 +44,8 @@ export const getAllCoupons = async (
   );
   return data;
 };
+
+export const deleteCoupon = async (couponId: string) => {
+  const { data } = await api.delete(`/coupon/${couponId}`);
+  return data;
+};
