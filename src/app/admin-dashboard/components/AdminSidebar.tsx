@@ -14,6 +14,7 @@ import {
   Settings,
   LogOut,
   Tag,
+  Library,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -42,6 +43,11 @@ const navItems = [
     label: "Audio Books",
     href: "/admin-dashboard/audio-books",
     icon: BookOpen,
+  },
+  {
+    label: "Book Categories",
+    href: "/admin-dashboard/book-categories",
+    icon: Library,
   },
   {
     label: "Orders Management",
