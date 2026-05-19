@@ -1,5 +1,5 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createCoupon } from "../api/coupon.api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createCoupon, getMyCoupons } from "../api/coupon.api";
 import { AxiosError } from "axios";
 import {
   ApiResponse,
@@ -19,5 +19,15 @@ export function useCreateCoupon() {
       // You can invalidate relevant queries here if you have a list of coupons
       // queryClient.invalidateQueries({ queryKey: ["coupons"] });
     },
+  });
+}
+
+export function useMyCoupons() {
+  return useQuery<
+    ApiResponse<CouponResponse[]>,
+    AxiosError<{ message: string }>
+  >({
+    queryKey: ["myCoupons"],
+    queryFn: getMyCoupons,
   });
 }

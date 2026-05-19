@@ -34,14 +34,18 @@ export default function CartPage() {
     updateQuantity.mutate({ bookId, quantity });
   };
 
-  const handlePurchase = async () => {
+  const handlePurchase = async (couponCode?: string) => {
     if (items.length === 0) {
       toast.error("Your cart is empty");
       return;
     }
     setPurchasing(true);
     try {
-      const res = await checkout({ orderType: "cart" });
+      const payload: { orderType: "cart" | "buy-now"; couponCode?: string } = {
+        orderType: "cart",
+      };
+      if (couponCode) payload.couponCode = couponCode;
+      const res = await checkout(payload);
       if (res.data?.checkoutUrl) {
         window.location.href = res.data.checkoutUrl;
       }
@@ -98,6 +102,10 @@ export default function CartPage() {
             subtotal={subtotal}
             vat={vat}
             discount={discount}
+            cartItems={items.map((item) => ({
+              bookId: item.book._id,
+              quantity: item.quantity,
+            }))}
             onPurchase={handlePurchase}
             purchasing={purchasing}
           />

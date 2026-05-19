@@ -9,10 +9,12 @@ export interface CreateCouponPayload {
 
 export interface CouponResponse {
   _id: string;
-  email: string;
+  email?: string;
   codeName: string;
+  assignedTo?: string;
   expiryDate: string;
   usesLimit: number;
+  usedCount: number;
   discountType: string;
   discountAmount: number;
   createdAt: string;

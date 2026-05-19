@@ -10,6 +10,7 @@ import MyLibraryTab from "@/features/user-dashboard/components/MyLibraryTab";
 import HistoryTab from "@/features/user-dashboard/components/HistoryTab";
 import ReviewsTab from "@/features/user-dashboard/components/ReviewsTab";
 import SettingsTab from "@/features/user-dashboard/components/SettingsTab";
+import MyCouponsTab from "@/features/user-dashboard/components/MyCouponsTab";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -22,6 +23,8 @@ export default function DashboardPage() {
         return <MyLibraryTab />;
       case "reviews":
         return <ReviewsTab />;
+      case "coupons":
+        return <MyCouponsTab />;
       case "history":
         return <HistoryTab />;
       case "settings":

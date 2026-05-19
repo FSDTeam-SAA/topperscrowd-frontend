@@ -14,3 +14,9 @@ export async function createCoupon(
   );
   return data;
 }
+
+export async function getMyCoupons(): Promise<ApiResponse<CouponResponse[]>> {
+  const { data } =
+    await api.get<ApiResponse<CouponResponse[]>>("/coupon/my-coupons");
+  return data;
+}
