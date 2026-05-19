@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
 
-export interface AssignedTo {
+export interface CouponUser {
   _id: string;
   firstName: string;
   lastName: string;
@@ -10,7 +10,7 @@ export interface AssignedTo {
 export interface Coupon {
   _id: string;
   codeName: string;
-  assignedTo: AssignedTo | null;
+  assignedTo: CouponUser | null;
   expiryDate: string;
   usesLimit: number;
   usedCount: number;
@@ -18,6 +18,8 @@ export interface Coupon {
   discountAmount: number;
   createdAt: string;
   updatedAt: string;
+  __v: number;
+  id?: string;
 }
 
 export interface GetAllCouponsResponse {
@@ -33,7 +35,10 @@ export interface GetAllCouponsResponse {
   data: Coupon[];
 }
 
-export const getAllCoupons = async (page = 1, limit = 10) => {
+export const getAllCoupons = async (
+  page = 1,
+  limit = 10,
+): Promise<GetAllCouponsResponse> => {
   const { data } = await api.get<GetAllCouponsResponse>(
     `/coupon/all-coupons?page=${page}&limit=${limit}`,
   );
