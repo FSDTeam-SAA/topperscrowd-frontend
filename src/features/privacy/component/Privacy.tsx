@@ -188,7 +188,10 @@ export default function PrivacyPolicy() {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="max-w-2xl mx-auto text-lg md:text-xl text-zinc-500 leading-relaxed mb-8"
             >
-              At <span className="text-zinc-900 font-semibold">Ka Thorian</span>
+              At{" "}
+              <span className="text-zinc-900 font-semibold">
+                Ka Thor&apos;ian
+              </span>
               , we respect your privacy and are committed to protecting your
               personal data. This policy explains how we collect, use, and
               safeguard your information.

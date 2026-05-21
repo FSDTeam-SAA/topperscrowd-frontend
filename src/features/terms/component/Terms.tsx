@@ -127,7 +127,9 @@ export default function Terms() {
               className="max-w-2xl mx-auto text-lg md:text-xl text-zinc-500 leading-relaxed mb-8"
             >
               Please read these terms carefully before using the{" "}
-              <span className="text-zinc-900 font-semibold">Ka Thorian</span>{" "}
+              <span className="text-zinc-900 font-semibold">
+                Ka Thor&apos;ian
+              </span>{" "}
               platform. They govern your relationship with our services.
             </motion.p>
 

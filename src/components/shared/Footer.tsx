@@ -74,8 +74,8 @@ export default function Footer() {
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-500 pt-4">
           <span className="text-xs text-slate-900">
-            &copy; {new Date().getFullYear()} This shoulld be © Ka Thor&apos;ian
-            Publishing LLC. All Rights Reserved
+            &copy; {new Date().getFullYear()} © Ka Thor&apos;ian Publishing LLC.
+            All Rights Reserved
           </span>
 
           {/* Social Links */}
