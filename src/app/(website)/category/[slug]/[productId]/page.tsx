@@ -62,7 +62,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
         />
       ) : null}
 
-      <NewReleaseBanner />
+      {/* <NewReleaseBanner /> */}
     </div>
   );
 }
