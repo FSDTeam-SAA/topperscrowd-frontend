@@ -98,7 +98,7 @@ export const categories: Category[] = [
 ];
 
 export const countdownUnits: CountdownUnit[] = [
-  { value: "02", label: "Hrs" },
+  { value: "07", label: "Day" },
+  { value: "05", label: "Hrs" },
   { value: "45", label: "Min" },
-  { value: "18", label: "Sec" },
 ];

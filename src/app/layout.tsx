@@ -4,6 +4,7 @@ import "./globals.css";
 import MainProviders from "@/Providers/MainProviders";
 import Provider from "@/Providers/Provider";
 import { Toaster } from "sonner";
+import FloatingChat from "@/components/shared/FloatingChat";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -25,7 +26,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} antialiased bg-[#fff8f5]`}>
         <MainProviders>
-          <Provider>{children}</Provider>
+          <Provider>
+            {children}
+            <FloatingChat />
+          </Provider>
         </MainProviders>
         <Toaster position="top-right" closeButton />
       </body>
