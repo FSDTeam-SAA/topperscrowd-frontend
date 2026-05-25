@@ -190,7 +190,7 @@ export default function PrivacyPolicy() {
             >
               At{" "}
               <span className="text-zinc-900 font-semibold">
-                Ka Thor&apos;ian
+                Ka Thor&apos;ian Publishing LLC
               </span>
               , we respect your privacy and are committed to protecting your
               personal data. This policy explains how we collect, use, and

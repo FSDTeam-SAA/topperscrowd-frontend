@@ -128,7 +128,7 @@ export default function Terms() {
             >
               Please read these terms carefully before using the{" "}
               <span className="text-zinc-900 font-semibold">
-                Ka Thor&apos;ian
+                Ka Thor&apos;ian Publishing LLC
               </span>{" "}
               platform. They govern your relationship with our services.
             </motion.p>

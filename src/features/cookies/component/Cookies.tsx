@@ -121,7 +121,7 @@ export default function Cookies() {
               This policy describes what cookies are and how they&apos;re being
               used by{" "}
               <span className="text-zinc-900 font-semibold">
-                Ka Thor&apos;ian
+                Ka Thor&apos;ian Publishing LLC
               </span>{" "}
               and its related services. We believe in total transparency.
             </motion.p>
