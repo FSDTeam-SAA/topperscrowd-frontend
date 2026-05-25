@@ -15,6 +15,7 @@ import {
   LogOut,
   Tag,
   Library,
+  Image as ImageIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -48,6 +49,11 @@ const navItems = [
     label: "Book Categories",
     href: "/admin-dashboard/book-categories",
     icon: Library,
+  },
+  {
+    label: "Cover Management",
+    href: "/admin-dashboard/cover-management",
+    icon: ImageIcon,
   },
   {
     label: "Orders Management",
