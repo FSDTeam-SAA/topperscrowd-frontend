@@ -48,7 +48,7 @@ export default function CoverManagement() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-slate-900 font-serif flex items-center gap-3">
-            <Sparkles className="size-8 text-indigo-600" />
+            {/* <Sparkles className="size-8 text-indigo-600" /> */}
             Cover Management
           </h1>
           <p className="text-slate-500 mt-1">
