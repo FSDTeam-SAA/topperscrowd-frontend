@@ -8,14 +8,13 @@ import { useCovers } from "../hooks/useCovers";
 
 export default function HeroSection() {
   const { data: covers } = useCovers();
+  // console.log("covers", covers);
   const cover = covers?.[0];
 
-  const title = cover?.title || "The Midnight Archivist";
-  const description =
-    cover?.description ||
-    "Journey into the heart of a forgotten city where memories are traded like currency. A cinematic audio experience narrated by Julian Vane.";
+  const title = cover?.title || "Coming soon...";
+  const description = cover?.description || "Coming soon...";
   const edition = cover?.edition || "12th Edition";
-  const imageUrl = cover?.image?.url || "/images/home/hero-book.png";
+  const imageUrl = cover?.image?.url || "";
 
   // Format edition string (e.g. "2nd Edition" -> "2nd", "Edition" -> "1st")
   const displayEdition = edition.toLowerCase().includes("edition")
