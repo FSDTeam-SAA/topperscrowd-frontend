@@ -30,6 +30,7 @@ export async function updateProfile(
 
     if (payload.firstName) formData.append("firstName", payload.firstName);
     if (payload.lastName) formData.append("lastName", payload.lastName);
+    if (payload.email) formData.append("email", payload.email);
     if (payload.phone) formData.append("phone", payload.phone);
     if (payload.street) formData.append("street", payload.street);
     if (payload.location) formData.append("location", payload.location);

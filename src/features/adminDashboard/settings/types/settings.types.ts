@@ -30,6 +30,7 @@ export interface UserProfileResponse {
 export interface UpdateProfilePayload {
   firstName?: string;
   lastName?: string;
+  email?: string;
   phone?: string;
   street?: string;
   location?: string;
