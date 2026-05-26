@@ -24,6 +24,7 @@ function PersonalInformationTab() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+    email: "",
     phone: "",
     street: "",
     location: "",
@@ -36,6 +37,7 @@ function PersonalInformationTab() {
       setFormData({
         firstName: profile.firstName || "",
         lastName: profile.lastName || "",
+        email: profile.email || "",
         phone: profile.phone || "",
         street: profile.street || "",
         location: profile.location || "",
@@ -69,6 +71,7 @@ function PersonalInformationTab() {
 
     if (formData.firstName) payload.firstName = formData.firstName;
     if (formData.lastName) payload.lastName = formData.lastName;
+    if (formData.email) payload.email = formData.email;
     if (formData.phone) payload.phone = formData.phone;
     if (formData.street) payload.street = formData.street;
     if (formData.location) payload.location = formData.location;
@@ -237,11 +240,21 @@ function PersonalInformationTab() {
               <label className="text-lg font-medium text-[#0f172a]">
                 Email Address
               </label>
-              <div className="rounded-lg border border-[#e4e4e4] p-4">
-                <span className="text-base text-[#64748b]">
-                  {profile?.email || "-"}
-                </span>
-              </div>
+              {isEditing ? (
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => handleChange("email", e.target.value)}
+                  placeholder="Enter email address"
+                  className={inputClass}
+                />
+              ) : (
+                <div className="rounded-lg border border-[#e4e4e4] p-4">
+                  <span className="text-base text-[#64748b]">
+                    {profile?.email || "-"}
+                  </span>
+                </div>
+              )}
             </div>
             <div className="flex flex-col gap-2">
               <label className="text-lg font-medium text-[#0f172a]">
