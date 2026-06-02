@@ -12,6 +12,7 @@ import {
   Calendar,
   BadgeCheck,
   BadgeX,
+  Trash2,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -20,7 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useUsersManagement } from "../hooks/useUsersManagement";
+import { useUsersManagement, useDeleteUser } from "../hooks/useUsersManagement";
 import { User } from "../types/usersManagement.types";
 
 const ITEMS_PER_PAGE = 10;
@@ -163,6 +164,14 @@ export default function UsersManagement() {
     ITEMS_PER_PAGE,
   );
 
+  const { mutate: removeUser, isPending: isDeleting } = useDeleteUser();
+
+  const handleDelete = (userId: string) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      removeUser(userId);
+    }
+  };
+
   const users = data?.data?.data ?? [];
   const meta = data?.data?.meta;
   const totalPages = meta?.totalPage ?? 1;
@@ -276,12 +285,22 @@ export default function UsersManagement() {
                     {user.totalOrders}
                   </td>
                   <td className="px-4 py-4 text-center">
-                    <button
-                      onClick={() => setSelectedUser(user)}
-                      className="rounded-full border border-[#1bb400] px-3 py-1 text-base text-[#0ca22f] transition-colors hover:bg-[#0ca22f] hover:text-white"
-                    >
-                      Details
-                    </button>
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => setSelectedUser(user)}
+                        className="rounded-full border border-[#1bb400] px-3 py-1 text-base text-[#0ca22f] transition-colors hover:bg-[#0ca22f] hover:text-white"
+                      >
+                        Details
+                      </button>
+                      <button
+                        onClick={() => handleDelete(user._id)}
+                        disabled={isDeleting}
+                        className="rounded-full p-2 text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
+                        title="Delete User"
+                      >
+                        <Trash2 className="size-5" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

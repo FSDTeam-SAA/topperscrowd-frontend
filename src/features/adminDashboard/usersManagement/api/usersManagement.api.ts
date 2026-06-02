@@ -23,3 +23,17 @@ export async function fetchUsers(
     throw new Error(extractErrorMessage(error));
   }
 }
+
+export async function deleteUser(
+  userId: string,
+): Promise<{ success: boolean; message: string }> {
+  try {
+    // The user specified /delete-user/{userId}
+    const { data } = await api.delete<{ success: boolean; message: string }>(
+      `/delete-user/${userId}`,
+    );
+    return data;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
+  }
+}

@@ -25,7 +25,16 @@ export async function fetchOrders(
   if (to) queryParams.set("to", to);
 
   const { data } = await api.get<OrdersResponse>(
-    `/order/get-all-orders?${queryParams.toString()}`,
+    `/admin-dashboard/recent-orders-stats?${queryParams.toString()}`,
+  );
+  return data;
+}
+
+export async function deleteOrder(
+  orderId: string,
+): Promise<{ success: boolean; message: string }> {
+  const { data } = await api.delete<{ success: boolean; message: string }>(
+    `/order/delete-order/${orderId}`,
   );
   return data;
 }

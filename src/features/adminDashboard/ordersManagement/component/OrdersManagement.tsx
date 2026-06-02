@@ -10,9 +10,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useOrders } from "../hooks/useOrdersManagement";
+import { useOrders, useDeleteOrder } from "../hooks/useOrdersManagement";
 import type { Order, OrdersParams } from "../types/ordersManagement.types";
 
 const ITEMS_PER_PAGE = 10;
@@ -38,12 +39,18 @@ export default function OrdersManagement() {
     sort: "descending",
   });
 
-  const orders = data?.data || [];
-  const meta = data?.meta;
-  const totalPages = meta?.totalPage || 1;
+  const { mutate: removeOrder, isPending: isDeleting } = useDeleteOrder();
 
-  // Compute stats from meta
-  const totalOrders = meta?.total || 0;
+  const handleDelete = (orderId: string) => {
+    if (window.confirm("Are you sure you want to delete this order?")) {
+      removeOrder(orderId);
+    }
+  };
+
+  const orders = data?.data?.recentOrders || [];
+  const meta = data?.data?.meta;
+  const totalOrders = meta?.totalOrders || 0;
+  const totalPages = Math.ceil(totalOrders / ITEMS_PER_PAGE) || 1;
   const paidCount = orders.filter((o) => o.paymentStatus === "paid").length;
   const pendingCount = orders.filter(
     (o) => o.paymentStatus === "pending",
@@ -193,6 +200,9 @@ export default function OrdersManagement() {
                   <th className="px-4 py-4 text-center text-base font-bold text-black">
                     Date
                   </th>
+                  <th className="px-4 py-4 text-center text-base font-bold text-black">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -239,6 +249,16 @@ export default function OrdersManagement() {
                         year: "numeric",
                       })}
                     </td>
+                    <td className="px-4 py-4 text-center">
+                      <button
+                        onClick={() => handleDelete(order._id)}
+                        disabled={isDeleting}
+                        className="rounded-full p-2 text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
+                        title="Delete Order"
+                      >
+                        <Trash2 className="size-5" />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -247,8 +267,7 @@ export default function OrdersManagement() {
             {/* Pagination */}
             <div className="flex items-center justify-between px-4 py-5 sm:px-12">
               <p className="text-sm text-[#3b3b3b]">
-                Page {meta?.page || 1} of {totalPages} ({meta?.total || 0}{" "}
-                results)
+                Page {meta?.page || 1} of {totalPages} ({totalOrders} results)
               </p>
 
               <div className="flex items-center gap-2">

@@ -44,18 +44,29 @@ export interface Order {
 }
 
 export interface OrdersMeta {
-  total: number;
   page: number;
   limit: number;
-  totalPage: number;
+  totalOrders: number;
+}
+
+export interface OrdersStats {
+  totalUsers: number;
+  totalOrders: number;
+  totalReviews: number;
+  totalRevenue: number;
+}
+
+export interface OrdersResponseData {
+  stats: OrdersStats;
+  recentOrders: Order[];
+  meta: OrdersMeta;
 }
 
 export interface OrdersResponse {
   success: boolean;
   message: string;
   statusCode: number;
-  meta: OrdersMeta;
-  data: Order[];
+  data: OrdersResponseData;
 }
 
 export interface OrdersParams {
