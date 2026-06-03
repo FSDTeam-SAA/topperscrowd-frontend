@@ -100,8 +100,12 @@ const handler = NextAuth({
             refreshToken: user.refreshToken,
           };
         } catch (error) {
-          console.error("Authorize error:", error);
-          throw new Error("Invalid email or password");
+          const message =
+            error instanceof Error
+              ? error.message
+              : "Invalid email or password";
+          console.warn("Authorize warning:", message);
+          throw new Error(message);
         }
       },
     }),
