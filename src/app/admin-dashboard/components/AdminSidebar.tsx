@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
+  ChevronDown,
   LayoutGrid,
   Users,
   BookOpen,
@@ -16,6 +17,8 @@ import {
   Tag,
   Library,
   Image as ImageIcon,
+  List,
+  type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -29,7 +32,21 @@ import {
 } from "@/components/ui/dialog";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
-const navItems = [
+interface NavChild {
+  label: string;
+  href: string;
+  icon: LucideIcon;
+  disabled?: boolean;
+}
+
+interface NavItem {
+  label: string;
+  href: string;
+  icon: LucideIcon;
+  children?: NavChild[];
+}
+
+const navItems: NavItem[] = [
   {
     label: "Dashboard Overview",
     href: "/admin-dashboard",
@@ -44,6 +61,23 @@ const navItems = [
     label: "Audio Books",
     href: "/admin-dashboard/audio-books",
     icon: BookOpen,
+  },
+  {
+    label: "E-Books",
+    href: "/admin-dashboard/e-books",
+    icon: BookOpen,
+    children: [
+      {
+        label: "Categories",
+        href: "/admin-dashboard/e-books/categories",
+        icon: Library,
+      },
+      {
+        label: "E-Book List",
+        href: "/admin-dashboard/e-books/list",
+        icon: List,
+      },
+    ],
   },
   {
     label: "Book Categories",
@@ -86,6 +120,21 @@ export default function AdminSidebar() {
   const pathname = usePathname();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { user, logout } = useAuth();
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({
+    "/admin-dashboard/e-books": true, // expanded by default
+  });
+
+  // Automatically expand if pathname starts with the parent href
+  useEffect(() => {
+    navItems.forEach((item) => {
+      if (item.children && pathname.startsWith(item.href)) {
+        setExpandedItems((prev) => ({
+          ...prev,
+          [item.href]: true,
+        }));
+      }
+    });
+  }, [pathname]);
 
   const handleLogout = async () => {
     setShowLogoutModal(false);
@@ -117,6 +166,74 @@ export default function AdminSidebar() {
               item.href === "/admin-dashboard"
                 ? pathname === "/admin-dashboard"
                 : pathname.startsWith(item.href);
+            const isParentWithChildren = Boolean(item.children?.length);
+
+            if (isParentWithChildren) {
+              const isExpanded = expandedItems[item.href] ?? isActive;
+              return (
+                <div key={item.href}>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setExpandedItems((prev) => ({
+                        ...prev,
+                        [item.href]: !prev[item.href],
+                      }))
+                    }
+                    className={cn(
+                      "flex w-full items-center gap-2 px-6 py-3 text-base transition-colors",
+                      isActive
+                        ? "bg-[#4f46e5] text-white"
+                        : "text-[#0f172a] hover:bg-[#e2e8f0]",
+                    )}
+                  >
+                    <item.icon className="size-5 shrink-0" />
+                    <span className="flex-1 text-left">{item.label}</span>
+                    <ChevronDown
+                      className={cn(
+                        "size-4 transition-transform duration-200",
+                        isExpanded && "rotate-180",
+                      )}
+                    />
+                  </button>
+                  {isExpanded && (
+                    <div className="bg-[#e2e8f0]/60 py-1">
+                      {item.children?.map((child) => {
+                        const childIsActive = pathname.startsWith(child.href);
+
+                        if (child.disabled) {
+                          return (
+                            <div
+                              key={child.href}
+                              className="flex cursor-not-allowed items-center gap-2 py-2.5 pl-12 pr-6 text-sm text-[#64748b] opacity-70"
+                            >
+                              <child.icon className="size-4 shrink-0" />
+                              <span>{child.label}</span>
+                            </div>
+                          );
+                        }
+
+                        return (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            className={cn(
+                              "flex items-center gap-2 py-2.5 pl-12 pr-6 text-sm transition-colors",
+                              childIsActive
+                                ? "font-semibold text-[#4f46e5]"
+                                : "text-[#334155] hover:text-[#0f172a]",
+                            )}
+                          >
+                            <child.icon className="size-4 shrink-0" />
+                            <span>{child.label}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
 
             return (
               <Link
