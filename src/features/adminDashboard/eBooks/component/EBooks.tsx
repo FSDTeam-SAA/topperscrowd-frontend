@@ -58,6 +58,16 @@ interface FilterValues {
 }
 
 // ─── Add E-Book Modal ────────────────────────────────────────────
+const FORMAT_TYPES = ["PDF", "EPUB", "MOBI"] as const;
+
+function normalizeSlug(val: string) {
+  return val
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 function AddEBookModal({
   open,
   onOpenChange,
@@ -66,30 +76,37 @@ function AddEBookModal({
   onOpenChange: (open: boolean) => void;
 }) {
   const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
   const [categoryId, setCategoryId] = useState("");
+  const [formatType, setFormatType] = useState("PDF");
   const [price, setPrice] = useState("");
-  const [language, setLanguage] = useState("");
-  const [publisher, setPublisher] = useState("");
-  const [publicationYear, setPublicationYear] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isPremium, setIsPremium] = useState(false);
+  const [status, setStatus] = useState("active");
+  const [coverImage, setCoverImage] = useState<File | null>(null);
   const [ebookFile, setEbookFile] = useState<File | null>(null);
 
   const { data: categoriesResponse } = useGetAllEBookCategories();
   const categories = categoriesResponse?.data || [];
   const createMutation = useCreateEBook();
 
+  const handleTitleChange = (val: string) => {
+    setTitle(val);
+    setSlug(normalizeSlug(val));
+  };
+
   const resetForm = () => {
     setTitle("");
+    setSlug("");
     setDescription("");
     setAuthor("");
     setCategoryId("");
+    setFormatType("PDF");
     setPrice("");
-    setLanguage("");
-    setPublisher("");
-    setPublicationYear("");
-    setImageFile(null);
+    setIsPremium(false);
+    setStatus("active");
+    setCoverImage(null);
     setEbookFile(null);
   };
 
@@ -98,15 +115,16 @@ function AddEBookModal({
 
     const formData = new FormData();
     formData.append("title", title);
+    formData.append("slug", slug);
     formData.append("description", description);
     formData.append("author", author);
     formData.append("category", categoryId);
+    formData.append("formatType", formatType);
     formData.append("price", price);
-    formData.append("language", language);
-    formData.append("publisher", publisher);
-    formData.append("publicationYear", publicationYear);
-    if (imageFile) formData.append("image", imageFile);
-    if (ebookFile) formData.append("ebook", ebookFile);
+    formData.append("isPremium", String(isPremium));
+    formData.append("status", status);
+    if (coverImage) formData.append("coverImage", coverImage);
+    if (ebookFile) formData.append("file", ebookFile);
 
     createMutation.mutate(formData, {
       onSuccess: () => {
@@ -119,6 +137,7 @@ function AddEBookModal({
   const inputClass =
     "w-full rounded-lg border border-[#727272] px-4 py-2.5 text-sm text-[#3b3b3b] placeholder:text-[#6c6c6c] focus:border-[#4f46e5] focus:outline-none";
   const labelClass = "mb-1.5 block text-sm font-medium text-[#3b3b3b]";
+  const selectClass = `${inputClass} appearance-none pr-10`;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -135,8 +154,20 @@ function AddEBookModal({
             <input
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => handleTitleChange(e.target.value)}
               placeholder="Enter book title"
+              className={inputClass}
+              required
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Slug</label>
+            <input
+              type="text"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              placeholder="auto-generated-slug"
               className={inputClass}
               required
             />
@@ -172,7 +203,7 @@ function AddEBookModal({
                 <select
                   value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
-                  className={`${inputClass} appearance-none pr-10`}
+                  className={selectClass}
                   required
                 >
                   <option value="">Select Category</option>
@@ -189,6 +220,24 @@ function AddEBookModal({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
+              <label className={labelClass}>Format Type</label>
+              <div className="relative">
+                <select
+                  value={formatType}
+                  onChange={(e) => setFormatType(e.target.value)}
+                  className={selectClass}
+                  required
+                >
+                  {FORMAT_TYPES.map((f) => (
+                    <option key={f} value={f}>
+                      {f}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-[#6c6c6c]" />
+              </div>
+            </div>
+            <div>
               <label className={labelClass}>Price ($)</label>
               <input
                 type="number"
@@ -201,41 +250,36 @@ function AddEBookModal({
                 required
               />
             </div>
-            <div>
-              <label className={labelClass}>Language</label>
-              <input
-                type="text"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                placeholder="e.g. English"
-                className={inputClass}
-                required
-              />
-            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className={labelClass}>Publisher</label>
-              <input
-                type="text"
-                value={publisher}
-                onChange={(e) => setPublisher(e.target.value)}
-                placeholder="Publisher name"
-                className={inputClass}
-                required
-              />
+              <label className={labelClass}>Status</label>
+              <div className="relative">
+                <select
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  className={selectClass}
+                >
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-[#6c6c6c]" />
+              </div>
             </div>
             <div>
-              <label className={labelClass}>Publication Year</label>
-              <input
-                type="number"
-                value={publicationYear}
-                onChange={(e) => setPublicationYear(e.target.value)}
-                placeholder="e.g. 2024"
-                className={inputClass}
-                required
-              />
+              <label className={labelClass}>Is Premium</label>
+              <button
+                type="button"
+                onClick={() => setIsPremium((p) => !p)}
+                className={`flex h-10 w-full items-center justify-center gap-2 rounded-lg border text-sm font-medium transition-colors ${
+                  isPremium
+                    ? "border-[#4f46e5] bg-[#4f46e5] text-white"
+                    : "border-[#727272] bg-white text-[#3b3b3b] hover:bg-gray-50"
+                }`}
+              >
+                {isPremium ? "Premium ✓" : "Not Premium"}
+              </button>
             </div>
           </div>
 
@@ -245,20 +289,20 @@ function AddEBookModal({
             <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-[#727272] p-4 transition-colors hover:border-[#4f46e5] hover:bg-[#f8f8ff]">
               <Upload className="size-5 text-[#6c6c6c]" />
               <span className="text-sm text-[#6c6c6c]">
-                {imageFile ? imageFile.name : "Click to upload cover image"}
+                {coverImage ? coverImage.name : "Click to upload cover image"}
               </span>
               <input
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
+                onChange={(e) => setCoverImage(e.target.files?.[0] ?? null)}
               />
             </label>
           </div>
 
           {/* E-Book Document Upload */}
           <div>
-            <label className={labelClass}>E-Book File (PDF/EPUB)</label>
+            <label className={labelClass}>E-Book File (PDF/EPUB/MOBI)</label>
             <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-[#727272] p-4 transition-colors hover:border-[#4f46e5] hover:bg-[#f8f8ff]">
               <FileText className="size-5 text-[#6c6c6c]" />
               <span className="text-sm text-[#6c6c6c]">
@@ -457,9 +501,9 @@ function ViewDetailModal({
         <div className="mt-2 space-y-5">
           {/* Cover + Title */}
           <div className="flex items-start gap-4">
-            {book.image?.secure_url && (
+            {book.coverImage?.secure_url && (
               <img
-                src={book.image.secure_url}
+                src={book.coverImage.secure_url}
                 alt={book.title}
                 className="size-20 rounded-lg border border-[#e4e4e4] object-cover"
               />
@@ -495,39 +539,30 @@ function ViewDetailModal({
             </div>
 
             <div className="rounded-lg bg-[#f8f8f8] p-4">
-              <div className="flex items-center gap-2 text-sm text-[#6b6b6b]">
-                <Globe className="size-4" />
-                Language
-              </div>
+              <div className="text-sm text-[#6b6b6b]">Slug</div>
               <p className="mt-1 text-sm font-semibold text-[#111]">
-                {book.language}
+                {book.slug}
               </p>
             </div>
 
             <div className="rounded-lg bg-[#f8f8f8] p-4">
-              <div className="flex items-center gap-2 text-sm text-[#6b6b6b]">
-                <Building2 className="size-4" />
-                Publisher
-              </div>
+              <div className="text-sm text-[#6b6b6b]">Format Type</div>
               <p className="mt-1 text-sm font-semibold text-[#111]">
-                {book.publisher}
-              </p>
-            </div>
-
-            <div className="rounded-lg bg-[#f8f8f8] p-4">
-              <div className="flex items-center gap-2 text-sm text-[#6b6b6b]">
-                <CalendarDays className="size-4" />
-                Publication Year
-              </div>
-              <p className="mt-1 text-sm font-semibold text-[#111]">
-                {book.publicationYear}
+                {book.formatType}
               </p>
             </div>
 
             <div className="rounded-lg bg-[#f8f8f8] p-4">
               <div className="text-sm text-[#6b6b6b]">Price</div>
               <p className="mt-1 text-sm font-semibold text-[#111]">
-                ${book.price.toFixed(2)}
+                ${book.price?.toFixed(2) || "0.00"}
+              </p>
+            </div>
+
+            <div className="rounded-lg bg-[#f8f8f8] p-4">
+              <div className="text-sm text-[#6b6b6b]">Premium Access</div>
+              <p className="mt-1 text-sm font-semibold text-[#111]">
+                {book.isPremium ? "Yes (Premium)" : "No (Free)"}
               </p>
             </div>
           </div>
@@ -558,14 +593,14 @@ function ViewDetailModal({
           </div>
 
           {/* PDF Link */}
-          {book.ebook?.secure_url && (
+          {book.file?.secure_url && (
             <div>
               <div className="mb-2 flex items-center gap-2 text-sm text-[#6b6b6b]">
                 <FileText className="size-4" />
                 E-Book Link
               </div>
               <a
-                href={book.ebook.secure_url}
+                href={book.file.secure_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-lg bg-indigo-50 px-4 py-2 text-sm font-semibold text-[#4f46e5] hover:bg-indigo-100 transition-colors"
@@ -619,32 +654,41 @@ function EditModal({
   onOpenChange: (open: boolean) => void;
 }) {
   const [title, setTitle] = useState(book.title);
+  const [slug, setSlug] = useState(book.slug);
   const [description, setDescription] = useState(book.description);
   const [author, setAuthor] = useState(book.author);
-  const [price, setPrice] = useState(String(book.price));
-  const [language, setLanguage] = useState(book.language);
-  const [publisher, setPublisher] = useState(book.publisher);
-  const [publicationYear, setPublicationYear] = useState(
-    String(book.publicationYear),
-  );
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [categoryId, setCategoryId] = useState(book.category?._id || "");
+  const [formatType, setFormatType] = useState(book.formatType || "PDF");
+  const [price, setPrice] = useState(String(book.price || ""));
+  const [isPremium, setIsPremium] = useState(book.isPremium || false);
+  const [status, setStatus] = useState(book.status || "active");
+  const [coverImage, setCoverImage] = useState<File | null>(null);
   const [ebookFile, setEbookFile] = useState<File | null>(null);
 
+  const { data: categoriesResponse } = useGetAllEBookCategories();
+  const categories = categoriesResponse?.data || [];
   const updateMutation = useUpdateEBook();
+
+  const handleTitleChange = (val: string) => {
+    setTitle(val);
+    setSlug(normalizeSlug(val));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const formData = new FormData();
     formData.append("title", title);
+    formData.append("slug", slug);
     formData.append("description", description);
     formData.append("author", author);
+    formData.append("category", categoryId);
+    formData.append("formatType", formatType);
     formData.append("price", price);
-    formData.append("language", language);
-    formData.append("publisher", publisher);
-    formData.append("publicationYear", publicationYear);
-    if (imageFile) formData.append("image", imageFile);
-    if (ebookFile) formData.append("ebook", ebookFile);
+    formData.append("isPremium", String(isPremium));
+    formData.append("status", status);
+    if (coverImage) formData.append("coverImage", coverImage);
+    if (ebookFile) formData.append("file", ebookFile);
 
     updateMutation.mutate(
       { ebookId: book._id, formData },
@@ -655,6 +699,7 @@ function EditModal({
   const inputClass =
     "w-full rounded-lg border border-[#727272] px-4 py-2.5 text-sm text-[#3b3b3b] placeholder:text-[#6c6c6c] focus:border-[#4f46e5] focus:outline-none";
   const labelClass = "mb-1.5 block text-sm font-medium text-[#3b3b3b]";
+  const selectClass = `${inputClass} appearance-none pr-10`;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -671,7 +716,18 @@ function EditModal({
             <input
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => handleTitleChange(e.target.value)}
+              className={inputClass}
+              required
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Slug</label>
+            <input
+              type="text"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
               className={inputClass}
               required
             />
@@ -700,6 +756,46 @@ function EditModal({
               />
             </div>
             <div>
+              <label className={labelClass}>Category</label>
+              <div className="relative">
+                <select
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  className={selectClass}
+                  required
+                >
+                  <option value="">Select Category</option>
+                  {categories?.map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-[#6c6c6c]" />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelClass}>Format Type</label>
+              <div className="relative">
+                <select
+                  value={formatType}
+                  onChange={(e) => setFormatType(e.target.value)}
+                  className={selectClass}
+                  required
+                >
+                  {FORMAT_TYPES.map((f) => (
+                    <option key={f} value={f}>
+                      {f}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-[#6c6c6c]" />
+              </div>
+            </div>
+            <div>
               <label className={labelClass}>Price ($)</label>
               <input
                 type="number"
@@ -715,45 +811,42 @@ function EditModal({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className={labelClass}>Language</label>
-              <input
-                type="text"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                className={inputClass}
-                required
-              />
+              <label className={labelClass}>Status</label>
+              <div className="relative">
+                <select
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  className={selectClass}
+                >
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-[#6c6c6c]" />
+              </div>
             </div>
             <div>
-              <label className={labelClass}>Publisher</label>
-              <input
-                type="text"
-                value={publisher}
-                onChange={(e) => setPublisher(e.target.value)}
-                className={inputClass}
-                required
-              />
+              <label className={labelClass}>Is Premium</label>
+              <button
+                type="button"
+                onClick={() => setIsPremium((p) => !p)}
+                className={`flex h-10 w-full items-center justify-center gap-2 rounded-lg border text-sm font-medium transition-colors ${
+                  isPremium
+                    ? "border-[#4f46e5] bg-[#4f46e5] text-white"
+                    : "border-[#727272] bg-white text-[#3b3b3b] hover:bg-gray-50"
+                }`}
+              >
+                {isPremium ? "Premium ✓" : "Not Premium"}
+              </button>
             </div>
-          </div>
-
-          <div className="w-1/2">
-            <label className={labelClass}>Publication Year</label>
-            <input
-              type="number"
-              value={publicationYear}
-              onChange={(e) => setPublicationYear(e.target.value)}
-              className={inputClass}
-              required
-            />
           </div>
 
           {/* Cover Image Upload */}
           <div>
             <label className={labelClass}>Cover Image</label>
-            {book.image?.secure_url && !imageFile && (
+            {book.coverImage?.secure_url && !coverImage && (
               <div className="mb-2 flex items-center gap-3">
                 <img
-                  src={book.image.secure_url}
+                  src={book.coverImage.secure_url}
                   alt="Current cover"
                   className="size-14 rounded-lg border border-[#e4e4e4] object-cover"
                 />
@@ -763,21 +856,23 @@ function EditModal({
             <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-[#727272] p-4 transition-colors hover:border-[#4f46e5] hover:bg-[#f8f8ff]">
               <Upload className="size-5 text-[#6c6c6c]" />
               <span className="text-sm text-[#6c6c6c]">
-                {imageFile ? imageFile.name : "Click to upload new cover image"}
+                {coverImage
+                  ? coverImage.name
+                  : "Click to upload new cover image"}
               </span>
               <input
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
+                onChange={(e) => setCoverImage(e.target.files?.[0] ?? null)}
               />
             </label>
           </div>
 
           {/* E-Book File Upload */}
           <div>
-            <label className={labelClass}>E-Book File (PDF/EPUB)</label>
-            {book.ebook?.secure_url && !ebookFile && (
+            <label className={labelClass}>E-Book File (PDF/EPUB/MOBI)</label>
+            {book.file?.secure_url && !ebookFile && (
               <div className="mb-2 flex items-center gap-3">
                 <div className="flex size-14 items-center justify-center rounded-lg border border-[#e4e4e4] bg-[#f8f8f8]">
                   <FileText className="size-6 text-[#4f46e5]" />
@@ -1002,9 +1097,9 @@ export default function EBooks() {
                   <tr key={book._id} className="hover:bg-[#fcfcfc]">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        {book.image?.secure_url ? (
+                        {book.coverImage?.secure_url ? (
                           <img
-                            src={book.image.secure_url}
+                            src={book.coverImage.secure_url}
                             alt={book.title}
                             className="size-10 rounded border border-[#e4e4e4] object-cover"
                           />
