@@ -11,6 +11,7 @@ import {
 import { checkout } from "@/features/order/api/order.api";
 import { toast } from "sonner";
 import { useState } from "react";
+import type { CartMutationItem } from "@/features/cart/api/cart.api";
 
 export default function CartPage() {
   const { data: cart, isLoading } = useCart();
@@ -19,19 +20,61 @@ export default function CartPage() {
   const [purchasing, setPurchasing] = useState(false);
 
   const items = cart?.items ?? [];
+  const cartItems = items
+    .map((item) => {
+      if (item.book) {
+        return {
+          id: item.book._id,
+          type: "book" as const,
+          image: item.book.image?.secure_url || "/images/home/book1.png",
+          title: item.book.title,
+          author: item.book.author,
+          language: item.book.language,
+          publisher: item.book.publisher,
+          price: item.book.price,
+          quantity: item.quantity,
+        };
+      }
+
+      if (item.ebook) {
+        return {
+          id: item.ebook._id,
+          type: "ebook" as const,
+          image: item.ebook.coverImage?.secure_url || "/images/home/book1.png",
+          title: item.ebook.title,
+          author: item.ebook.author,
+          language: item.ebook.formatType || "E-Book",
+          publisher: item.ebook.category?.name || "E-Book",
+          price: item.ebook.price,
+          quantity: item.quantity,
+        };
+      }
+
+      return null;
+    })
+    .filter((item): item is NonNullable<typeof item> => Boolean(item));
   const subtotal = items.reduce(
-    (sum, item) => sum + item.book.price * item.quantity,
+    (sum, item) =>
+      sum + (item.book?.price ?? item.ebook?.price ?? 0) * item.quantity,
     0,
   );
   const vat = Number((subtotal * 0.15).toFixed(2));
   const discount = 0;
 
-  const handleRemoveItem = (bookId: string) => {
-    removeItem.mutate(bookId);
+  const handleRemoveItem = (itemId: string) => {
+    removeItem.mutate(itemId);
   };
 
-  const handleUpdateQuantity = (bookId: string, quantity: number) => {
-    updateQuantity.mutate({ bookId, quantity });
+  const handleUpdateQuantity = (
+    itemId: string,
+    quantity: number,
+    type: "book" | "ebook",
+  ) => {
+    const payload: CartMutationItem =
+      type === "book"
+        ? { bookId: itemId, quantity }
+        : { ebookId: itemId, quantity };
+    updateQuantity.mutate(payload);
   };
 
   const handlePurchase = async (couponCode?: string) => {
@@ -71,23 +114,23 @@ export default function CartPage() {
                   <CartItemSkeleton key={i} />
                 ))}
               </div>
-            ) : items.length > 0 ? (
+            ) : cartItems.length > 0 ? (
               <div className="space-y-8">
-                {items.map((item) => (
+                {cartItems.map((item) => (
                   <CartItem
-                    key={item._id}
-                    id={item.book._id}
-                    image={
-                      item.book.image?.secure_url || "/images/home/book1.png"
-                    }
-                    title={item.book.title}
-                    author={item.book.author}
-                    language={item.book.language}
-                    publisher={item.book.publisher}
-                    price={item.book.price}
+                    key={`${item.type}-${item.id}`}
+                    id={item.id}
+                    image={item.image}
+                    title={item.title}
+                    author={item.author}
+                    language={item.language}
+                    publisher={item.publisher}
+                    price={item.price}
                     quantity={item.quantity}
                     onRemove={handleRemoveItem}
-                    onUpdateQuantity={handleUpdateQuantity}
+                    onUpdateQuantity={(id, quantity) =>
+                      handleUpdateQuantity(id, quantity, item.type)
+                    }
                   />
                 ))}
               </div>
@@ -102,10 +145,11 @@ export default function CartPage() {
             subtotal={subtotal}
             vat={vat}
             discount={discount}
-            cartItems={items.map((item) => ({
-              bookId: item.book._id,
-              quantity: item.quantity,
-            }))}
+            cartItems={cartItems.map((item) =>
+              item.type === "book"
+                ? { bookId: item.id, quantity: item.quantity }
+                : { ebookId: item.id, quantity: item.quantity },
+            )}
             onPurchase={handlePurchase}
             purchasing={purchasing}
           />

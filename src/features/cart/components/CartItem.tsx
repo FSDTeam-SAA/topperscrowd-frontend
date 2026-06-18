@@ -19,6 +19,7 @@ interface CartItemProps {
 export default function CartItem({
   id,
   image,
+  title,
   author,
   pages,
   language,
@@ -43,12 +44,14 @@ export default function CartItem({
         <div className="flex flex-1 flex-col sm:flex-row justify-between gap-4">
           <div className="flex gap-4 sm:gap-6 text-sm text-slate-700">
             <div className="flex flex-col gap-3 font-medium text-slate-500">
+              <span>Title</span>
               <span>Author</span>
               <span>Number of pages</span>
               <span>Language</span>
               <span>Publisher</span>
             </div>
             <div className="flex flex-col gap-3 text-slate-800">
+              <span>{title}</span>
               <span>{author}</span>
               <span>{pages || "N/A"}</span>
               <span>{language}</span>

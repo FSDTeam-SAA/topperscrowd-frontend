@@ -8,8 +8,10 @@ import type { Book } from "@/types/shared";
 interface BookCardProps {
   book: Book;
   categorySlug?: string;
+  hrefBase?: string;
   showPlayIcon?: boolean;
   buttonLabel?: string;
+  showDescription?: boolean;
   onRemove?: (id: string) => void;
   onAddToCart?: (id: string) => void;
 }
@@ -17,12 +19,16 @@ interface BookCardProps {
 export default function BookCard({
   book,
   categorySlug,
+  hrefBase = "/category",
   showPlayIcon = false,
   buttonLabel = "Preview",
+  showDescription = false,
   onRemove,
   onAddToCart,
 }: BookCardProps) {
-  const href = categorySlug ? `/category/${categorySlug}/${book.id}` : "#";
+  const href =
+    book.href ??
+    (categorySlug ? `${hrefBase}/${categorySlug}/${book.id}` : "#");
   const isWishlist = !!onRemove;
 
   return (
@@ -58,6 +64,11 @@ export default function BookCard({
               </h3>
             </Link>
             <p className="text-xs text-slate-500">{book.author}</p>
+            {showDescription && book.description && (
+              <p className="line-clamp-2 text-sm leading-relaxed text-slate-500">
+                {book.description}
+              </p>
+            )}
           </div>
           <div className="flex items-center gap-4">
             <RatingStars rating={book.rating} />
@@ -76,7 +87,7 @@ export default function BookCard({
               className="rounded-lg border-indigo-600 px-5 py-2.5 text-sm font-medium text-indigo-600 hover:bg-indigo-50"
               onClick={() => onAddToCart(book.id)}
             >
-              Add to Cart
+              {buttonLabel === "Preview" ? "Add to Cart" : buttonLabel}
             </Button>
           ) : buttonLabel === "Add to Cart" ? (
             <Button

@@ -7,9 +7,12 @@ interface BookGridProps {
   subtitle: string;
   books: Book[];
   categorySlug?: string;
+  hrefBase?: string;
   viewAllHref?: string;
   showPlayIcon?: boolean;
   buttonLabel?: string;
+  showDescription?: boolean;
+  onAddToCart?: (id: string) => void;
 }
 
 export default function BookGrid({
@@ -17,9 +20,12 @@ export default function BookGrid({
   subtitle,
   books,
   categorySlug,
+  hrefBase = "/category",
   viewAllHref,
   showPlayIcon = false,
   buttonLabel,
+  showDescription = false,
+  onAddToCart,
 }: BookGridProps) {
   return (
     <div className="flex flex-col gap-5">
@@ -34,8 +40,11 @@ export default function BookGrid({
             key={book.id}
             book={book}
             categorySlug={categorySlug}
+            hrefBase={hrefBase}
             showPlayIcon={showPlayIcon}
             buttonLabel={buttonLabel}
+            showDescription={showDescription}
+            onAddToCart={onAddToCart}
           />
         ))}
       </div>

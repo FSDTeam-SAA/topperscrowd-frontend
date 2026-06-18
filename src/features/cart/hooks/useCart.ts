@@ -7,6 +7,7 @@ import {
   updateCartQuantity,
   removeCartItem,
   clearCart,
+  type CartMutationItem,
 } from "../api/cart.api";
 import { toast } from "sonner";
 
@@ -21,8 +22,7 @@ export function useCart() {
 export function useAddToCart() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (items: { bookId: string; quantity: number }[]) =>
-      addToCart(items),
+    mutationFn: (items: CartMutationItem[]) => addToCart(items),
     onSuccess: (res) => {
       toast.success(res.message || "Added to cart");
       qc.invalidateQueries({ queryKey: ["cart"] });
@@ -36,8 +36,7 @@ export function useAddToCart() {
 export function useUpdateCartQuantity() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ bookId, quantity }: { bookId: string; quantity: number }) =>
-      updateCartQuantity(bookId, quantity),
+    mutationFn: (item: CartMutationItem) => updateCartQuantity(item),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["cart"] });
     },
