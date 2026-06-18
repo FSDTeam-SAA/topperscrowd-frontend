@@ -17,6 +17,7 @@ function extractErrorMessage(error: unknown): string {
 export async function checkout(body: {
   orderType: "buy-now" | "cart";
   bookId?: string;
+  ebookId?: string;
   quantity?: number;
   couponCode?: string;
 }) {

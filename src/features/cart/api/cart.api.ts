@@ -2,6 +2,10 @@ import { api } from "@/lib/api";
 import type { ApiResponse, ApiCart } from "@/types/shared";
 import { AxiosError } from "axios";
 
+export type CartMutationItem =
+  | { bookId: string; quantity: number; ebookId?: never }
+  | { ebookId: string; quantity: number; bookId?: never };
+
 function extractErrorMessage(error: unknown): string {
   if (error instanceof AxiosError) {
     const message = (error.response?.data as ApiResponse)?.message;
@@ -23,7 +27,7 @@ export async function getCart() {
   }
 }
 
-export async function addToCart(items: { bookId: string; quantity: number }[]) {
+export async function addToCart(items: CartMutationItem[]) {
   try {
     const { data } = await api.post<ApiResponse<ApiCart>>("/cart/add-to-cart", {
       items,
@@ -34,11 +38,11 @@ export async function addToCart(items: { bookId: string; quantity: number }[]) {
   }
 }
 
-export async function updateCartQuantity(bookId: string, quantity: number) {
+export async function updateCartQuantity(item: CartMutationItem) {
   try {
     const { data } = await api.patch<ApiResponse<ApiCart>>(
       "/cart/update-quantity",
-      { bookId, quantity },
+      item,
     );
     return data;
   } catch (error) {
@@ -46,10 +50,10 @@ export async function updateCartQuantity(bookId: string, quantity: number) {
   }
 }
 
-export async function removeCartItem(bookId: string) {
+export async function removeCartItem(itemId: string) {
   try {
     const { data } = await api.delete<ApiResponse<ApiCart>>(
-      `/cart/remove-item/${bookId}`,
+      `/cart/remove-item/${itemId}`,
     );
     return data;
   } catch (error) {

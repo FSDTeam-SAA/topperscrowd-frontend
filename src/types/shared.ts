@@ -1,4 +1,7 @@
 // API response wrapper
+import type { EBook } from "@/features/e-book/types/e-book.types";
+import type { EBookCategory } from "@/features/e-book-category/types/e-book-category.types";
+
 export interface ApiResponse<T = unknown> {
   success: boolean;
   message: string;
@@ -87,7 +90,8 @@ export interface ApiCart {
 }
 
 export interface CartItem {
-  book: ApiBook;
+  book?: ApiBook;
+  ebook?: EBook;
   quantity: number;
   _id: string;
 }
@@ -130,6 +134,7 @@ export interface Book {
   narrator?: string;
   duration?: string;
   releaseDate?: string;
+  href?: string;
 }
 
 export interface Category {
@@ -137,6 +142,7 @@ export interface Category {
   title: string;
   subtitle: string;
   image: string;
+  hrefBase?: string;
 }
 
 export interface Review {
@@ -169,6 +175,32 @@ export function mapApiCategoryToCategory(c: BookCategory): Category {
     title: c.title.trim(),
     subtitle: c.description.trim(),
     image: c.image?.secure_url || "/images/home/category-scifi.png",
+  };
+}
+
+export function mapApiEBookToBook(b: EBook): Book {
+  return {
+    id: b._id,
+    title: b.title,
+    author: b.author || "Unknown Author",
+    price: `$${b.price.toFixed(2)}`,
+    rating: b.averageRating ?? 0,
+    ratingCount: b.totalReviews ?? 0,
+    image: b.coverImage?.secure_url || "/images/home/book1.png",
+    description: b.description,
+    language: b.formatType,
+    publisher: b.category?.name,
+    href: `/e-books/${b.category?._id ?? "all"}/${b._id}`,
+  };
+}
+
+export function mapApiEBookCategoryToCategory(c: EBookCategory): Category {
+  return {
+    slug: c._id,
+    title: c.name.trim(),
+    subtitle: c.description?.trim() || "Browse all e-books in this category",
+    image: "/images/home/category-scifi.png",
+    hrefBase: "/e-books",
   };
 }
 

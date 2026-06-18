@@ -5,6 +5,7 @@ const footerLinks = {
   Product: [
     { name: "Start Listening", href: "/dashboard" },
     { name: "Category", href: "/category" },
+    { name: "E-Books", href: "/e-books" },
   ],
   Legal: [
     { name: "Privacy", href: "/privacy" },

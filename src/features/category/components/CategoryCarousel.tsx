@@ -9,6 +9,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 interface CategoryCarouselProps {
   categories: Category[];
   autoPlayInterval?: number;
+  hrefBase?: string;
 }
 
 const CARD_WIDTH = 282;
@@ -17,6 +18,7 @@ const GAP = 24;
 export default function CategoryCarousel({
   categories,
   autoPlayInterval = 4000,
+  hrefBase = "/category",
 }: CategoryCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -110,6 +112,7 @@ export default function CategoryCarousel({
               category={category}
               className="h-[376px] w-[282px] shrink-0 bg-neutral-900"
               buttonLabel="View Details"
+              hrefBase={hrefBase}
             />
           ))}
         </div>

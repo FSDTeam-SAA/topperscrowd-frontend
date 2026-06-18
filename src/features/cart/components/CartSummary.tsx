@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 
 interface CartItem {
-  bookId: string;
+  bookId?: string;
+  ebookId?: string;
   quantity: number;
 }
 

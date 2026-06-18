@@ -7,16 +7,20 @@ interface CategoryCardProps {
   category: Category;
   className?: string;
   buttonLabel?: string;
+  hrefBase?: string;
 }
 
 export default function CategoryCard({
   category,
   className = "",
   buttonLabel = "Preview",
+  hrefBase = "/category",
 }: CategoryCardProps) {
+  const base = category.hrefBase ?? hrefBase;
+
   return (
     <Link
-      href={`/category/${category.slug}`}
+      href={`${base}/${category.slug}`}
       className={`relative block overflow-hidden  rounded-xl group ${className}`}
     >
       <div className="absolute inset-0">

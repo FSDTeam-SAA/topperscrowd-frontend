@@ -5,12 +5,20 @@ interface RelatedBooksProps {
   books: Book[];
   categorySlug: string;
   currentBookId: string;
+  hrefBase?: string;
+  viewAllHref?: string;
+  buttonLabel?: string;
+  showDescription?: boolean;
 }
 
 export default function RelatedBooks({
   books,
   categorySlug,
   currentBookId,
+  hrefBase = "/category",
+  viewAllHref,
+  buttonLabel = "Add to Cart",
+  showDescription = false,
 }: RelatedBooksProps) {
   const related = books.filter((b) => b.id !== currentBookId).slice(0, 4);
 
@@ -23,8 +31,10 @@ export default function RelatedBooks({
         subtitle=""
         books={related}
         categorySlug={categorySlug}
-        viewAllHref={`/category/${categorySlug}/all`}
-        buttonLabel="Add to Cart"
+        hrefBase={hrefBase}
+        viewAllHref={viewAllHref ?? `${hrefBase}/${categorySlug}/all`}
+        buttonLabel={buttonLabel}
+        showDescription={showDescription}
       />
     </div>
   );
