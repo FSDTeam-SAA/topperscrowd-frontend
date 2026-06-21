@@ -70,7 +70,7 @@ export async function updateEBook(
 
 export async function deleteEBook(ebookId: string): Promise<void> {
   try {
-    await api.delete(`/ebook/delete-ebook/${ebookId}`);
+    await api.delete(`/ebook/${ebookId}`);
   } catch (error) {
     throw new Error(extractErrorMessage(error));
   }

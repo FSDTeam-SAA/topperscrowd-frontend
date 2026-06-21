@@ -186,7 +186,7 @@ export function mapApiEBookToBook(b: EBook): Book {
     price: `$${b.price.toFixed(2)}`,
     rating: b.averageRating ?? 0,
     ratingCount: b.totalReviews ?? 0,
-    image: b.coverImage?.secure_url || "/images/home/book1.png",
+    image: b.coverImage?.url || "/images/home/book1.png",
     description: b.description,
     language: b.formatType,
     publisher: b.category?.name,

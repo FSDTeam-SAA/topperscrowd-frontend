@@ -126,14 +126,14 @@ export default function EBookDetail({
             >
               {addToCart.isPending ? "Adding..." : "Add to Cart"}
             </Button>
-            {ebook.file?.secure_url && (
+            {ebook.file?.url && (
               <Button
                 asChild
                 variant="outline"
                 className="border-slate-300 text-slate-700 hover:bg-slate-50 rounded px-6 py-2.5 text-sm font-medium"
               >
                 <Link
-                  href={ebook.file.secure_url}
+                  href={ebook.file.url}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

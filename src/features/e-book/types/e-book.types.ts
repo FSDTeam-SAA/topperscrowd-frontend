@@ -1,11 +1,12 @@
 export interface EBookImage {
   public_id: string;
-  secure_url: string;
+  url: string;
 }
 
 export interface EBookFile {
   public_id: string;
-  secure_url: string;
+  url: string;
+  fileSize?: string;
 }
 
 export interface EBookCategoryRef {
