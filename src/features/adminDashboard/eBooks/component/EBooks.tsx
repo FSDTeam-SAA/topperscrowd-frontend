@@ -501,9 +501,9 @@ function ViewDetailModal({
         <div className="mt-2 space-y-5">
           {/* Cover + Title */}
           <div className="flex items-start gap-4">
-            {book.coverImage?.secure_url && (
+            {book.coverImage?.url && (
               <img
-                src={book.coverImage.secure_url}
+                src={book.coverImage.url}
                 alt={book.title}
                 className="size-20 rounded-lg border border-[#e4e4e4] object-cover"
               />
@@ -593,14 +593,14 @@ function ViewDetailModal({
           </div>
 
           {/* PDF Link */}
-          {book.file?.secure_url && (
+          {book.file?.url && (
             <div>
               <div className="mb-2 flex items-center gap-2 text-sm text-[#6b6b6b]">
                 <FileText className="size-4" />
                 E-Book Link
               </div>
               <a
-                href={book.file.secure_url}
+                href={book.file.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-lg bg-indigo-50 px-4 py-2 text-sm font-semibold text-[#4f46e5] hover:bg-indigo-100 transition-colors"
@@ -843,10 +843,10 @@ function EditModal({
           {/* Cover Image Upload */}
           <div>
             <label className={labelClass}>Cover Image</label>
-            {book.coverImage?.secure_url && !coverImage && (
+            {book.coverImage?.url && !coverImage && (
               <div className="mb-2 flex items-center gap-3">
                 <img
-                  src={book.coverImage.secure_url}
+                  src={book.coverImage.url}
                   alt="Current cover"
                   className="size-14 rounded-lg border border-[#e4e4e4] object-cover"
                 />
@@ -872,7 +872,7 @@ function EditModal({
           {/* E-Book File Upload */}
           <div>
             <label className={labelClass}>E-Book File (PDF/EPUB/MOBI)</label>
-            {book.file?.secure_url && !ebookFile && (
+            {book.file?.url && !ebookFile && (
               <div className="mb-2 flex items-center gap-3">
                 <div className="flex size-14 items-center justify-center rounded-lg border border-[#e4e4e4] bg-[#f8f8f8]">
                   <FileText className="size-6 text-[#4f46e5]" />
@@ -1097,9 +1097,9 @@ export default function EBooks() {
                   <tr key={book._id} className="hover:bg-[#fcfcfc]">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        {book.coverImage?.secure_url ? (
+                        {book.coverImage?.url ? (
                           <img
-                            src={book.coverImage.secure_url}
+                            src={book.coverImage.url}
                             alt={book.title}
                             className="size-10 rounded border border-[#e4e4e4] object-cover"
                           />
