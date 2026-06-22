@@ -32,24 +32,29 @@ export default function BookCard({
   const isWishlist = !!onRemove;
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden rounded-2xl">
+    <div className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
       <Link
         href={href}
-        className="group relative block h-64 w-full overflow-hidden"
+        className="group relative overflow-hidden rounded-t-2xl bg-white"
       >
-        <Image
-          src={book.image}
-          alt={book.title}
-          fill
-          className="object-cover transition-transform group-hover:scale-105"
-        />
+        <div className="relative flex h-72 items-center justify-center bg-slate-50 p-4">
+          <Image
+            src={book.image}
+            alt={book.title}
+            fill={false}
+            width={300}
+            height={400}
+            className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
+          />
+        </div>
+
         {isWishlist && (
           <button
             onClick={(e) => {
               e.preventDefault();
               onRemove(book.id);
             }}
-            className="absolute right-3 top-3 rounded-full bg-white p-2 opacity-0 shadow-md transition-opacity group-hover:opacity-100"
+            className="absolute right-3 top-3 rounded-full bg-white p-2 shadow-md"
           >
             <Trash2 className="size-5 text-red-600" />
           </button>
