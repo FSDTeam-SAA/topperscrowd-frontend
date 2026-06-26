@@ -4,6 +4,7 @@ import {
   fetchContinueListening,
   fetchRecentPurchases,
   fetchMyBooks,
+  fetchMyPurchasedEBooks,
   updateListenerProgress,
 } from "../api/library.api";
 
@@ -36,6 +37,13 @@ export function useMyBooks(
   return useQuery({
     queryKey: ["myBooks", page, limit, search],
     queryFn: () => fetchMyBooks(page, limit, search),
+  });
+}
+
+export function useMyPurchasedEBooks(page: number = 1, limit: number = 10) {
+  return useQuery({
+    queryKey: ["myPurchasedEBooks", page, limit],
+    queryFn: () => fetchMyPurchasedEBooks(page, limit),
   });
 }
 

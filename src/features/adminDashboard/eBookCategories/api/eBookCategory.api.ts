@@ -19,22 +19,37 @@ export const getAllEBookCategories =
   };
 
 export const createEBookCategory = async (
-  payload: EBookCategoryPayload,
+  payload: FormData,
 ): Promise<EBookCategoryResponse> => {
   const { data } = await api.post<EBookCategoryResponse>(
     "/ecategory/create-ecategory",
     payload,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    },
   );
   return data;
 };
 
 export const updateEBookCategory = async (
   categoryId: string,
-  payload: EBookCategoryPayload,
+  payload: EBookCategoryPayload | FormData,
 ): Promise<EBookCategoryResponse> => {
+  const config =
+    payload instanceof FormData
+      ? {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      : undefined;
+
   const { data } = await api.patch<EBookCategoryResponse>(
     `/ecategory/update/${categoryId}`,
     payload,
+    config,
   );
   return data;
 };

@@ -5,6 +5,7 @@ import {
   LibraryBook,
   LibraryStats,
   PaginatedResponse,
+  PurchasedEBook,
 } from "../types/library.types";
 
 export async function fetchLibraryStats(): Promise<ApiResponse<LibraryStats>> {
@@ -42,6 +43,21 @@ export async function fetchMyBooks(
   if (search) params.append("search", search);
   const { data } = await api.get<PaginatedResponse<LibraryBook>>(
     `/library/my-books?${params.toString()}`,
+  );
+  return data;
+}
+
+export async function fetchMyPurchasedEBooks(
+  page: number = 1,
+  limit: number = 10,
+): Promise<PaginatedResponse<PurchasedEBook>> {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+  });
+
+  const { data } = await api.get<PaginatedResponse<PurchasedEBook>>(
+    `/library/my-purchased-ebooks?${params.toString()}`,
   );
   return data;
 }

@@ -4,6 +4,11 @@ export interface EBookCategory {
   slug: string;
   description: string;
   isActive: boolean;
+  image?: {
+    public_id?: string;
+    secure_url?: string;
+    url?: string;
+  };
   createdAt: string;
   updatedAt: string;
 }

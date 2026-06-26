@@ -38,7 +38,7 @@ export const useUpdateEBookCategory = () => {
       payload,
     }: {
       id: string;
-      payload: EBookCategoryPayload;
+      payload: EBookCategoryPayload | FormData;
     }) => updateEBookCategory(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({

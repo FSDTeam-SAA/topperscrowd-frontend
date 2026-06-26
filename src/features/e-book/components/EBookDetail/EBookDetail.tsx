@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { FileText, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { EBook } from "@/features/e-book/types/e-book.types";
 import { useAddToCart } from "@/features/cart/hooks/useCart";
@@ -126,7 +125,7 @@ export default function EBookDetail({
             >
               {addToCart.isPending ? "Adding..." : "Add to Cart"}
             </Button>
-            {ebook.file?.url && (
+            {/* {ebook.file?.url && (
               <Button
                 asChild
                 variant="outline"
@@ -141,7 +140,7 @@ export default function EBookDetail({
                   Read E-Book
                 </Link>
               </Button>
-            )}
+            )} */}
           </div>
         </div>
       </div>

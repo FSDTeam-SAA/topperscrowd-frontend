@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Settings, LogOut, Star, BookOpenCheck, Ticket } from "lucide-react";
+import {
+  Settings,
+  LogOut,
+  Star,
+  BookOpenCheck,
+  Ticket,
+  FileText,
+  CreditCard,
+} from "lucide-react";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 
@@ -21,6 +29,8 @@ export default function DashboardSidebar({
 
   const menuItems = [
     { id: "library", label: "My Library", icon: BookOpenCheck },
+    { id: "purchased-ebooks", label: "E-book Purchase", icon: FileText },
+    { id: "payment-history", label: "Payment History", icon: CreditCard },
     { id: "reviews", label: "My Reviews", icon: Star },
     { id: "coupons", label: "My Coupons", icon: Ticket },
   ];
