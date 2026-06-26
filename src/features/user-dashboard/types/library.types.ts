@@ -14,6 +14,45 @@ export interface BookAudio {
   secure_url: string;
 }
 
+export interface EBookFile {
+  public_id: string;
+  url: string;
+  fileSize?: string;
+}
+
+export interface PurchasedEBook {
+  _id: string;
+  title: string;
+  slug: string;
+  description: string;
+  author: string;
+  coverImage?: {
+    public_id: string;
+    url: string;
+  };
+  file?: EBookFile;
+  formatType: string;
+  category?: {
+    _id: string;
+    name: string;
+    slug: string;
+  };
+  price: number;
+  isPremium: boolean;
+  status: string;
+  saleCount: number;
+  downloadCount: number;
+  hasFile: boolean;
+  purchaseInfo?: {
+    orderId: string;
+    purchasedAt: string;
+    price: number;
+    quantity: number;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface LibraryBook {
   _id: string;
   title: string;

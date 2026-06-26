@@ -25,7 +25,7 @@ export async function fetchOrders(
   if (to) queryParams.set("to", to);
 
   const { data } = await api.get<OrdersResponse>(
-    `/admin-dashboard/recent-orders-stats?${queryParams.toString()}`,
+    `/order/admin/all-orders?${queryParams.toString()}`,
   );
   return data;
 }

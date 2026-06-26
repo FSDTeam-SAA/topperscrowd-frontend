@@ -4,6 +4,8 @@ import { useState } from "react";
 import DashboardSidebar from "@/features/user-dashboard/components/DashboardSidebar";
 import DashboardOverview from "@/features/user-dashboard/components/DashboardOverview";
 import MyLibraryTab from "@/features/user-dashboard/components/MyLibraryTab";
+import PurchasedEBooksTab from "@/features/user-dashboard/components/PurchasedEBooksTab";
+import PaymentHistoryTab from "@/features/user-dashboard/components/PaymentHistoryTab";
 // import ProfileTab from "@/features/user-dashboard/components/ProfileTab";
 // import OrdersTab from "@/features/user-dashboard/components/OrdersTab";
 // import WishlistTab from "@/features/user-dashboard/components/WishlistTab";
@@ -21,6 +23,10 @@ export default function DashboardPage() {
     switch (activeTab) {
       case "library":
         return <MyLibraryTab />;
+      case "purchased-ebooks":
+        return <PurchasedEBooksTab />;
+      case "payment-history":
+        return <PaymentHistoryTab />;
       case "reviews":
         return <ReviewsTab />;
       case "coupons":

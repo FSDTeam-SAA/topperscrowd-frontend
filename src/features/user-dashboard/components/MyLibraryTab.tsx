@@ -129,7 +129,7 @@ export default function MyLibraryTab() {
   const myBooks = myBooksData?.data || [];
   const pagination = myBooksData?.pagination;
 
-  const audioUrl = continueListening?.book.audio?.secure_url;
+  const audioUrl = continueListening?.book?.audio?.secure_url;
 
   // Initialize audio element when audioUrl changes
   useEffect(() => {
@@ -304,10 +304,10 @@ export default function MyLibraryTab() {
               <div className="relative h-[120px] w-[100px] shrink-0 overflow-hidden rounded-md">
                 <Image
                   src={
-                    continueListening.book.image?.secure_url ||
+                    continueListening.book?.image?.secure_url ||
                     "/images/home/book1.png"
                   }
-                  alt={continueListening.book.title}
+                  alt={continueListening.book?.title ?? ""}
                   fill
                   className="object-cover"
                 />
@@ -315,11 +315,11 @@ export default function MyLibraryTab() {
               {/* Book Info */}
               <div className="space-y-3">
                 <h3 className="text-2xl font-bold text-slate-900 font-serif">
-                  {continueListening.book.title}
+                  {continueListening.book?.title}
                 </h3>
                 <div className="space-y-2">
                   <p className="text-base text-slate-500">
-                    {continueListening.book.author}
+                    {continueListening.book?.author}
                   </p>
                 </div>
               </div>

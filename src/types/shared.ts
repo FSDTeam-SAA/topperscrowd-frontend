@@ -199,7 +199,8 @@ export function mapApiEBookCategoryToCategory(c: EBookCategory): Category {
     slug: c._id,
     title: c.name.trim(),
     subtitle: c.description?.trim() || "Browse all e-books in this category",
-    image: "/images/home/category-scifi.png",
+    image:
+      c.image?.secure_url || c.image?.url || "/images/home/category-scifi.png",
     hrefBase: "/e-books",
   };
 }

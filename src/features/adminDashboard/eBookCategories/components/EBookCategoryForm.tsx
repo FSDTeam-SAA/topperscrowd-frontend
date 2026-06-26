@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   AlignLeft,
   CheckCircle2,
   FileText,
+  Image as ImageIcon,
   Link2,
   Loader2,
 } from "lucide-react";
@@ -28,6 +29,7 @@ interface FormErrors {
   name?: string;
   slug?: string;
   description?: string;
+  image?: string;
 }
 
 const normalizeSlug = (value: string) =>
@@ -58,7 +60,19 @@ export default function EBookCategoryForm({
     description: category?.description || "",
     isActive: category?.isActive ?? true,
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    category?.image?.secure_url || category?.image?.url || null,
+  );
   const [errors, setErrors] = useState<FormErrors>({});
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview?.startsWith("blob:")) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
 
   const takenSlugs = useMemo(
     () =>
@@ -90,6 +104,10 @@ export default function EBookCategoryForm({
       nextErrors.description = "Description is required";
     }
 
+    if (!isEditMode && !imageFile) {
+      nextErrors.image = "Image is required";
+    }
+
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   };
@@ -102,6 +120,36 @@ export default function EBookCategoryForm({
     setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (imagePreview?.startsWith("blob:")) {
+      URL.revokeObjectURL(imagePreview);
+    }
+
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setErrors((prev) => ({ ...prev, image: undefined }));
+  };
+
+  const buildSubmitData = () => {
+    const submitData = new FormData();
+    submitData.append("name", formData.name.trim());
+    submitData.append("slug", normalizeSlug(formData.slug));
+    submitData.append("description", formData.description.trim());
+    submitData.append("isActive", String(formData.isActive));
+
+    if (imageFile) {
+      submitData.append("image", imageFile);
+    }
+
+    return submitData;
+  };
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -109,12 +157,7 @@ export default function EBookCategoryForm({
       return;
     }
 
-    const payload: EBookCategoryPayload = {
-      name: formData.name.trim(),
-      slug: normalizeSlug(formData.slug),
-      description: formData.description.trim(),
-      isActive: formData.isActive,
-    };
+    const payload = buildSubmitData();
 
     if (category) {
       updateMutation.mutate(
@@ -145,6 +188,8 @@ export default function EBookCategoryForm({
           description: "",
           isActive: true,
         });
+        setImageFile(null);
+        setImagePreview(null);
         onSuccessAction?.();
       },
       onError: (error) => {
@@ -226,6 +271,39 @@ export default function EBookCategoryForm({
             {errors.description && (
               <p className="text-sm font-medium text-rose-600">
                 {errors.description}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+              <ImageIcon className="size-4 text-indigo-500" />
+              Image
+            </label>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              {imagePreview ? (
+                <div
+                  aria-label="E-book category preview"
+                  className="size-20 rounded-xl border border-slate-200 bg-cover bg-center"
+                  style={{ backgroundImage: `url(${imagePreview})` }}
+                />
+              ) : (
+                <div className="flex size-20 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 text-slate-400">
+                  <ImageIcon className="size-7" />
+                </div>
+              )}
+              <input
+                type="file"
+                name="image"
+                accept="image/*"
+                onChange={handleImageChange}
+                required={!isEditMode}
+                className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-600 transition-all file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+            {errors.image && (
+              <p className="text-sm font-medium text-rose-600">
+                {errors.image}
               </p>
             )}
           </div>

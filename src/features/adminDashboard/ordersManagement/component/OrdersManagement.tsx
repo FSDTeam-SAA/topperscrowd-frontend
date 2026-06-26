@@ -24,6 +24,23 @@ const statusStyles: Record<string, string> = {
   cancelled: "bg-[#fee2e2] text-[#dc2626]",
 };
 
+const getCustomerName = (order: Order) => {
+  const fullName = [order.userId.firstName, order.userId.lastName]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
+
+  return fullName || order.userId.email;
+};
+
+const getItemTitle = (item: Order["items"][number]) => {
+  if (item.productType === "ebook") {
+    return item.ebook?.title || "Deleted e-book";
+  }
+
+  return item.book?.title || "Deleted book";
+};
+
 export default function OrdersManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchInput, setSearchInput] = useState("");
@@ -42,15 +59,13 @@ export default function OrdersManagement() {
   const { mutate: removeOrder, isPending: isDeleting } = useDeleteOrder();
 
   const handleDelete = (orderId: string) => {
-    if (window.confirm("Are you sure you want to delete this order?")) {
-      removeOrder(orderId);
-    }
+    removeOrder(orderId);
   };
 
-  const orders = data?.data?.recentOrders || [];
+  const orders = data?.data?.data || [];
   const meta = data?.data?.meta;
-  const totalOrders = meta?.totalOrders || 0;
-  const totalPages = Math.ceil(totalOrders / ITEMS_PER_PAGE) || 1;
+  const totalOrders = meta?.total || 0;
+  const totalPages = meta?.totalPage || 1;
   const paidCount = orders.filter((o) => o.paymentStatus === "paid").length;
   const pendingCount = orders.filter(
     (o) => o.paymentStatus === "pending",
@@ -129,7 +144,7 @@ export default function OrdersManagement() {
             <div className="flex h-[52px] w-full sm:w-[400px]">
               <input
                 type="text"
-                placeholder="Search by transaction ID..."
+                placeholder="Search by email, order ID, or PayPal ID..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -213,18 +228,26 @@ export default function OrdersManagement() {
                     </td>
                     <td className="px-4 py-4">
                       <p className="text-sm text-[#0f172a]">
+                        {getCustomerName(order)}
+                      </p>
+                      <p className="text-xs text-[#6c6c6c]">
                         {order.userId.email}
                       </p>
-                      <p className="text-xs capitalize text-[#6c6c6c]">
-                        {order.userId.role}
-                      </p>
+                      {order.paypalOrderId && (
+                        <p className="mt-1 font-mono text-[11px] text-[#6c6c6c]">
+                          {order.paypalOrderId}
+                        </p>
+                      )}
                     </td>
                     <td className="max-w-[250px] px-4 py-4">
                       {order.items.map((item, idx) => (
                         <div key={idx} className="text-sm text-[#0f172a]">
-                          {item.book.title}{" "}
+                          {getItemTitle(item)}{" "}
                           <span className="text-xs text-[#6c6c6c]">
                             x{item.quantity}
+                          </span>
+                          <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-slate-600">
+                            {item.productType}
                           </span>
                         </div>
                       ))}
