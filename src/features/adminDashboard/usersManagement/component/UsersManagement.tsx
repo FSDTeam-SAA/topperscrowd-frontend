@@ -167,9 +167,7 @@ export default function UsersManagement() {
   const { mutate: removeUser, isPending: isDeleting } = useDeleteUser();
 
   const handleDelete = (userId: string) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      removeUser(userId);
-    }
+    removeUser(userId);
   };
 
   const users = data?.data?.data ?? [];

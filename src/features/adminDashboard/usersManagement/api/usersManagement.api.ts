@@ -30,7 +30,7 @@ export async function deleteUser(
   try {
     // The user specified /delete-user/{userId}
     const { data } = await api.delete<{ success: boolean; message: string }>(
-      `/delete-user/${userId}`,
+      `/user/delete-user/${userId}`,
     );
     return data;
   } catch (error) {

@@ -48,12 +48,14 @@ export default function EBookDetail({
   return (
     <div className="mx-auto max-w-[1200px] px-4 md:px-8 lg:px-[120px] pt-6 md:pt-10">
       <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start">
-        <div className="relative h-[280px] w-full md:h-[340px] md:w-[280px] shrink-0 overflow-hidden rounded-lg shadow-lg">
+        <div className="relative flex h-[280px] w-full shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-50 p-3 shadow-lg md:h-[340px] md:w-[280px]">
           <Image
             src={book.image}
             alt={book.title}
-            fill
-            className="object-cover"
+            fill={false}
+            width={280}
+            height={340}
+            className="max-h-full max-w-full rounded-md object-contain transition-transform duration-300 hover:scale-105"
           />
         </div>
 
@@ -149,7 +151,7 @@ export default function EBookDetail({
         <h2 className="font-serif text-[28px] font-bold leading-[1.2] text-slate-900 mb-4">
           Description
         </h2>
-        <div className="flex flex-col gap-4 text-sm leading-relaxed text-slate-600">
+        <div className="flex flex-col gap-4 text-sm leading-relaxed text-slate-600 mb-6">
           {(book.description || "No description available.")
             .split("\n\n")
             .map((paragraph, i) => (

@@ -100,7 +100,7 @@ const navItems: NavItem[] = [
     icon: Star,
   },
   {
-    label: "Cupon Code",
+    label: "Coupon Code",
     href: "/admin-dashboard/cupon-code",
     icon: Tag,
   },
