@@ -173,11 +173,11 @@ export default function HeroSection() {
                   {description}
                 </p>
                 <div className="flex gap-3">
-                  <Link href="/dashboard" className="block h-full">
+                  {/* <Link href="/dashboard" className="block h-full">
                     <Button className="bg-indigo-600 hover:bg-indigo-700 rounded px-6 py-3 text-sm text-[#fff8f5]">
                       Start Listening
                     </Button>
-                  </Link>
+                  </Link> */}
 
                   <Link href="/category" className="block h-full">
                     <Button
